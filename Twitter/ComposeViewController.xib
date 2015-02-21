@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ComposeViewController">
+            <connections>
+                <outlet property="nameLabel" destination="lhR-dx-sw6" id="byA-dp-0I2"/>
+                <outlet property="profilePicView" destination="JTt-DP-HQD" id="ZrN-L6-am7"/>
+                <outlet property="profileTopVerticalSpaceConstraint" destination="NXV-pJ-xLM" id="pcQ-BX-LsF"/>
+                <outlet property="screenNameLabel" destination="jox-hh-Ijd" id="8Ky-bR-oeL"/>
+                <outlet property="tweetInputPlaceholderView" destination="z7o-oj-81a" id="XST-aq-kDZ"/>
+                <outlet property="tweetInputTextView" destination="CMC-hK-eq8" id="LXP-vP-Iyc"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_profile_pic_normal_48" translatesAutoresizingMaskIntoConstraints="NO" id="JTt-DP-HQD">
+                    <rect key="frame" x="8" y="8" width="48" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="48" id="CPR-Ed-X1j"/>
+                        <constraint firstAttribute="height" constant="48" id="uYZ-v2-uUs"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Arsenal FC" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lhR-dx-sw6">
+                    <rect key="frame" x="64" y="8" width="78.5" height="18"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="15"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="@Arsenal" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jox-hh-Ijd">
+                    <rect key="frame" x="64" y="26" width="55.5" height="16"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="What's happening?" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z7o-oj-81a">
+                    <rect key="frame" x="3" y="56" width="309" height="50"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="3He-7A-tX5"/>
+                    </constraints>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CMC-hK-eq8">
+                    <rect key="frame" x="3" y="56" width="309" height="504"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="JTt-DP-HQD" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="07i-u4-z8v"/>
+                <constraint firstItem="CMC-hK-eq8" firstAttribute="top" secondItem="JTt-DP-HQD" secondAttribute="bottom" id="CkC-Nz-jGq"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lhR-dx-sw6" secondAttribute="trailing" constant="10" id="I5S-uN-aqt"/>
+                <constraint firstAttribute="bottom" secondItem="CMC-hK-eq8" secondAttribute="bottom" constant="8" id="Jud-c3-ody"/>
+                <constraint firstAttribute="trailing" secondItem="CMC-hK-eq8" secondAttribute="trailing" constant="8" id="LUC-zu-fCO"/>
+                <constraint firstItem="z7o-oj-81a" firstAttribute="trailing" secondItem="CMC-hK-eq8" secondAttribute="trailing" id="Lmc-lc-l54"/>
+                <constraint firstItem="JTt-DP-HQD" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="8" id="NXV-pJ-xLM"/>
+                <constraint firstItem="jox-hh-Ijd" firstAttribute="top" secondItem="lhR-dx-sw6" secondAttribute="bottom" id="fC2-0J-T1y"/>
+                <constraint firstItem="z7o-oj-81a" firstAttribute="leading" secondItem="CMC-hK-eq8" secondAttribute="leading" id="fax-14-muv"/>
+                <constraint firstItem="jox-hh-Ijd" firstAttribute="leading" secondItem="lhR-dx-sw6" secondAttribute="leading" id="hdW-ku-8XW"/>
+                <constraint firstItem="CMC-hK-eq8" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="3" id="j2T-6n-JGP"/>
+                <constraint firstItem="lhR-dx-sw6" firstAttribute="leading" secondItem="JTt-DP-HQD" secondAttribute="trailing" constant="8" id="jUE-6Z-blc"/>
+                <constraint firstItem="JTt-DP-HQD" firstAttribute="top" secondItem="lhR-dx-sw6" secondAttribute="top" id="r2g-sd-Mgd"/>
+                <constraint firstItem="z7o-oj-81a" firstAttribute="top" secondItem="CMC-hK-eq8" secondAttribute="top" id="vzf-CM-iFp"/>
+            </constraints>
+            <point key="canvasLocation" x="413" y="241"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="default_profile_pic_normal_48" width="48" height="48"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

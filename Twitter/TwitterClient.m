@@ -21,6 +21,8 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
 
 @implementation TwitterClient
 
+#pragma mark - login related
+
 - (void)loginWithCompletion:(void (^)(User *user, NSError *error))completion {
     self.loginCompletion = completion;
     // To clear your previous login state
@@ -59,21 +61,37 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     }];
 }
 
+#pragma mark - twitter API endpoint wrappers
+
+// Helper to pull the homeline
 - (void)homeTimelineWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion {
     [self GET:@"1.1/statuses/home_timeline.json" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //NSLog(@"tweets %@", responseObject);
         NSArray *tweets = [Tweet tweetsWithArray:responseObject];
-        NSLog(@"response %@", responseObject);
+        //NSLog(@"response %@", responseObject);
         completion(tweets, nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Failed to get tweets with error %@", error);
         completion(nil, error);
     }];
-    
-    
 }
 
+// Helper to tweet
+- (void)tweet:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion {
+    [self POST:@"1.1/statuses/update.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        NSLog(@"formData %@", formData);
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"tweet response %@", responseObject);
+        if (completion != nil) {
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"tweet failed %@", error);
+        if (completion != nil) {
+        }
+    }];
+}
 
+// Singleton
 + (TwitterClient *)sharedInstance {
     static TwitterClient *instance = nil;
     

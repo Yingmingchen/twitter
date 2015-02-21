@@ -24,6 +24,10 @@
 		9690A46F1A970A130096348B /* TweetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A46D1A970A130096348B /* TweetCell.xib */; };
 		9690A4731A9740330096348B /* MediaTweetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4711A9740330096348B /* MediaTweetCell.m */; };
 		9690A4741A9740330096348B /* MediaTweetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A4721A9740330096348B /* MediaTweetCell.xib */; };
+		9690A4781A9914A70096348B /* ComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4761A9914A70096348B /* ComposeViewController.m */; };
+		9690A4791A9914A70096348B /* ComposeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A4771A9914A70096348B /* ComposeViewController.xib */; };
+		9690A47D1A993BB80096348B /* TweetDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A47B1A993BB80096348B /* TweetDetailViewController.m */; };
+		9690A47E1A993BB80096348B /* TweetDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A47C1A993BB80096348B /* TweetDetailViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +71,12 @@
 		9690A4701A9740330096348B /* MediaTweetCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaTweetCell.h; sourceTree = "<group>"; };
 		9690A4711A9740330096348B /* MediaTweetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaTweetCell.m; sourceTree = "<group>"; };
 		9690A4721A9740330096348B /* MediaTweetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MediaTweetCell.xib; sourceTree = "<group>"; };
+		9690A4751A9914A70096348B /* ComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeViewController.h; sourceTree = "<group>"; };
+		9690A4761A9914A70096348B /* ComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeViewController.m; sourceTree = "<group>"; };
+		9690A4771A9914A70096348B /* ComposeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeViewController.xib; sourceTree = "<group>"; };
+		9690A47A1A993BB80096348B /* TweetDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetDetailViewController.h; sourceTree = "<group>"; };
+		9690A47B1A993BB80096348B /* TweetDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetDetailViewController.m; sourceTree = "<group>"; };
+		9690A47C1A993BB80096348B /* TweetDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetDetailViewController.xib; sourceTree = "<group>"; };
 		F4B08E525481200B33332AD5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -193,6 +203,12 @@
 				9690A4631A963E190096348B /* TweetsViewController.h */,
 				9690A4641A963E190096348B /* TweetsViewController.m */,
 				9690A4651A963E190096348B /* TweetsViewController.xib */,
+				9690A4751A9914A70096348B /* ComposeViewController.h */,
+				9690A4761A9914A70096348B /* ComposeViewController.m */,
+				9690A4771A9914A70096348B /* ComposeViewController.xib */,
+				9690A47A1A993BB80096348B /* TweetDetailViewController.h */,
+				9690A47B1A993BB80096348B /* TweetDetailViewController.m */,
+				9690A47C1A993BB80096348B /* TweetDetailViewController.xib */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -297,9 +313,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				9690A4671A963E190096348B /* TweetsViewController.xib in Resources */,
+				9690A47E1A993BB80096348B /* TweetDetailViewController.xib in Resources */,
 				9690A46F1A970A130096348B /* TweetCell.xib in Resources */,
 				9690A43F1A9475450096348B /* LaunchScreen.xib in Resources */,
 				9690A43C1A9475450096348B /* Images.xcassets in Resources */,
+				9690A4791A9914A70096348B /* ComposeViewController.xib in Resources */,
 				9690A4741A9740330096348B /* MediaTweetCell.xib in Resources */,
 				9690A4581A94768F0096348B /* LoginViewController.xib in Resources */,
 			);
@@ -355,10 +373,12 @@
 				9690A45B1A94797E0096348B /* TwitterClient.m in Sources */,
 				9690A4341A9475450096348B /* AppDelegate.m in Sources */,
 				9690A4621A9483450096348B /* User.m in Sources */,
+				9690A4781A9914A70096348B /* ComposeViewController.m in Sources */,
 				9690A45F1A9482FF0096348B /* Tweet.m in Sources */,
 				9690A4731A9740330096348B /* MediaTweetCell.m in Sources */,
 				9690A4311A9475450096348B /* main.m in Sources */,
 				9690A4571A94768F0096348B /* LoginViewController.m in Sources */,
+				9690A47D1A993BB80096348B /* TweetDetailViewController.m in Sources */,
 				9690A4661A963E190096348B /* TweetsViewController.m in Sources */,
 				9690A46E1A970A130096348B /* TweetCell.m in Sources */,
 			);

@@ -7,10 +7,10 @@
 //
 
 #import "TweetsViewController.h"
+#import "ComposeViewController.h"
 #import "User.h"
 #import "Tweet.h"
 #import "TwitterClient.h"
-#import "TweetCell.h"
 #import "MediaTweetCell.h"
 
 @interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -18,7 +18,10 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
 @property (weak, nonatomic) IBOutlet UIImageView *twitterLogIconView;
+
 @property (strong, nonatomic) NSArray *tweets;
+@property (nonatomic, strong) UIRefreshControl *tableRefreshControl;
+@property (nonatomic, strong) UIActivityIndicatorView *infiniteLoadingView;
 
 @end
 
@@ -37,6 +40,7 @@
 
     self.title = @"Home";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Logout-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onLogout)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -49,19 +53,11 @@
     self.tableView.hidden = YES;
     self.navigationController.navigationBarHidden = YES;
     
-    self.tweets = [[NSArray alloc] init];
+    [self initAutoLoadingUISupport];
     
-    // TODO: move this under Tweet class (ORM) instead of calling it here
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    [params setObject:@(200) forKey:@"count"];
-    [[TwitterClient sharedInstance] homeTimelineWithParams:params completion:^(NSArray *tweets, NSError *error) {
-        //NSLog(@"get tweets %@", tweets);
-        self.tweets = tweets;
-        self.backgroundView.hidden = YES;
-        self.tableView.hidden = NO;
-        self.navigationController.navigationBarHidden = NO;
-        [self.tableView reloadData];
-    }];
+    self.tweets = [[NSArray alloc] init];
+
+    [self loadHomelineWithParams:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -69,8 +65,51 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - load/reload methods
+
+- (void)loadHomelineWithParams:(NSMutableDictionary *)params {
+    // TODO: move this under Tweet class (ORM) instead of calling it here
+    NSMutableDictionary *finalParams = params;
+    
+    if (finalParams == nil) {
+        finalParams = [[NSMutableDictionary alloc] init];
+        [finalParams setObject:@(40) forKey:@"count"];
+    }
+
+    [[TwitterClient sharedInstance] homeTimelineWithParams:finalParams completion:^(NSArray *tweets, NSError *error) {
+        //NSLog(@"get tweets %@", tweets);
+        self.tweets = tweets;
+        self.backgroundView.hidden = YES;
+        self.tableView.hidden = NO;
+        self.navigationController.navigationBarHidden = NO;
+        [self.tableRefreshControl endRefreshing];
+        [self.tableView reloadData];
+    }];
+}
+
+// Helper function to setup the UI for pull to refresh and infinite loading
+- (void)initAutoLoadingUISupport {
+    // "pull to refresh" support
+    self.tableRefreshControl = [[UIRefreshControl alloc] init];
+    [self.tableRefreshControl addTarget:self action:@selector(onPullDownRefresh) forControlEvents:UIControlEventValueChanged];
+    [self.tableView insertSubview:self.tableRefreshControl atIndex:0];
+    
+//    // For infinite loading
+//    UIView *tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 30)];
+//    self.infiniteLoadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    self.infiniteLoadingView.center = tableFooterView.center;
+//    [tableFooterView addSubview:self.infiniteLoadingView];
+//    self.tableView.tableFooterView = tableFooterView;
+}
+
+
+- (void)onPullDownRefresh {
+    [self loadHomelineWithParams:nil];
+}
+
 #pragma mark - Table methods
 
+// Make the separator line extends all the way to the left
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
@@ -90,15 +129,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     Tweet *tweet = self.tweets[indexPath.row];
-    if (tweet.tweetPhotoUrl != nil) {
-        MediaTweetCell *mcell = [tableView dequeueReusableCellWithIdentifier:@"MediaTweetCell"];
-        mcell.tweet = tweet;
-        return mcell;
-    } else {
-        TweetCell *tcell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
-        tcell.tweet = tweet;
-        return tcell;
-    }
+    MediaTweetCell *mcell = [tableView dequeueReusableCellWithIdentifier:@"MediaTweetCell"];
+    mcell.tweet = tweet;
+    
+    return mcell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -108,6 +142,13 @@
 
 - (void)onLogout {
     [User logout];
+}
+
+- (void)onCompose {
+    NSLog(@"compose");
+    ComposeViewController *cvc = [[ComposeViewController alloc] init];
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+    [self presentViewController:nvc animated:YES completion:nil];
 }
 
 @end
