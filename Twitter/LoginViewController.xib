@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController">
+            <connections>
+                <outlet property="bottomLoginView" destination="nHY-yK-FIS" id="7AC-Lj-6QS"/>
+                <outlet property="loginButton" destination="Pl6-R5-8Hx" id="C22-bf-im9"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="K8R-EP-LpD">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nHY-yK-FIS">
+                    <rect key="frame" x="0.0" y="506" width="320" height="62"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pl6-R5-8Hx">
+                            <rect key="frame" x="130" y="16" width="60" height="30"/>
+                            <color key="backgroundColor" red="0.3168450484" green="0.69176963739999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="b3L-WR-c2b"/>
+                                <constraint firstAttribute="width" constant="60" id="tNz-3K-2Q5"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                            <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <state key="normal" title="Log in">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="onLogin:" destination="-1" eventType="touchUpInside" id="MkW-C8-wdU"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="62" id="1sL-Mm-iyM"/>
+                        <constraint firstAttribute="centerY" secondItem="Pl6-R5-8Hx" secondAttribute="centerY" id="65i-v3-9j6"/>
+                        <constraint firstAttribute="centerX" secondItem="Pl6-R5-8Hx" secondAttribute="centerX" id="L7Y-Wg-n9L"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="K8R-EP-LpD" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="0wf-X8-jZQ"/>
+                <constraint firstAttribute="trailing" secondItem="K8R-EP-LpD" secondAttribute="trailing" id="DKJ-dy-ghv"/>
+                <constraint firstAttribute="bottom" secondItem="nHY-yK-FIS" secondAttribute="bottom" id="I6H-kJ-2I2"/>
+                <constraint firstAttribute="bottom" secondItem="K8R-EP-LpD" secondAttribute="bottom" id="UbJ-qt-XOe"/>
+                <constraint firstAttribute="trailing" secondItem="nHY-yK-FIS" secondAttribute="trailing" id="YeX-y8-fwa"/>
+                <constraint firstItem="nHY-yK-FIS" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="aOA-GT-1YD"/>
+                <constraint firstItem="K8R-EP-LpD" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="yYY-9m-Rbd"/>
+            </constraints>
+            <point key="canvasLocation" x="139.5" y="154"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Background" width="377" height="499"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>
