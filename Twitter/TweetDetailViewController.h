@@ -14,7 +14,7 @@
 @protocol TweetDetailViewControllerDelegate <NSObject>
 
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didFavoriteTweet:(BOOL)value;
-- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(BOOL)value;
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(Tweet *)originalTweet;
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRetweetButtonClicked:(BOOL)value;
 
 @end
@@ -23,6 +23,7 @@
 @interface TweetDetailViewController : UIViewController
 
 @property (nonatomic, strong) Tweet *tweet;
+@property (nonatomic, strong) NSIndexPath *indexPath;
 
 @property (nonatomic, weak) id<TweetDetailViewControllerDelegate> delegate;
 

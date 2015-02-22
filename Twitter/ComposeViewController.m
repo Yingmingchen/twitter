@@ -19,10 +19,19 @@
 @property (weak, nonatomic) IBOutlet UIImageView *profilePicView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *textCountLabel;
 
 @end
 
 @implementation ComposeViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.originalTweet = nil;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,7 +43,8 @@
      setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"cancel-25"] style:UIBarButtonItemStylePlain target:self action:@selector(onCancel)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Sent-25"] style:UIBarButtonItemStylePlain target:self action:@selector(onPost)];
+    UIBarButtonItem *postButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Sent-25"] style:UIBarButtonItemStylePlain target:self action:@selector(onPost)];
+    self.navigationItem.rightBarButtonItem = postButton;
     
     // Setup rotation related stuff to make sure our own elements below navigation bar
     // See http://stackoverflow.com/questions/23478724/autolayout-specify-spacing-between-view-and-navigation-bar
@@ -46,7 +56,19 @@
     self.nameLabel.text = currentUser.name;
     self.screenNameLabel.text = [NSString stringWithFormat:@"@%@", currentUser.screenname];
     
+    self.profilePicView.layer.cornerRadius = 3;
+    self.profilePicView.clipsToBounds = YES;
+    
     self.tweetInputTextView.delegate = self;
+    
+    if (self.originalTweet != nil) {
+        self.tweetInputTextView.text = [NSString stringWithFormat:@"@%@ ", self.originalTweet.user.screenname];
+        self.tweetInputPlaceholderView.hidden = YES;
+        // Move the cursor to the end
+        self.tweetInputTextView.selectedRange = NSMakeRange([self.tweetInputTextView.text length], 0);
+        self.textCountLabel.text = [NSString stringWithFormat:@"%ld", 140 - self.tweetInputTextView.text.length];
+        [self.tweetInputTextView becomeFirstResponder];
+    }
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -70,7 +92,7 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
     self.tweetInputPlaceholderView.hidden = YES;
-    NSLog(@"tweet length %ld", textView.text.length);
+    self.textCountLabel.text = [NSString stringWithFormat:@"%ld", 140 - textView.text.length];
 }
 
 #pragma mark - helper functions
@@ -82,7 +104,14 @@
 - (void) onPost {
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:self.tweetInputTextView.text forKey:@"status"];
-    [[TwitterClient sharedInstance] tweet:params completion:nil];
+    if (self.originalTweet != nil) {
+        [params setObject:@([self.originalTweet.tweetId integerValue]) forKey:@"in_reply_to_status_id"];
+    }
+    [[TwitterClient sharedInstance] tweet:params completion:^(Tweet *tweet, NSError *error) {
+        if (tweet != nil) {
+            [self.delegate ComposeViewController:self didTweet:tweet];
+        }
+    }];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

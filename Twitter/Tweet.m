@@ -25,6 +25,9 @@
         NSLog(@"tweetId %@", self.tweetId);
         self.retweetCount = [dictionary[@"retweet_count"] integerValue];
         self.retweeted = [dictionary[@"retweeted"] boolValue];
+        if (self.retweeted) {
+            NSLog(@"my retweet tweet %@", dictionary);
+        }
         NSDictionary *childTweetDictionary = dictionary[@"retweeted_status"];
         if (childTweetDictionary != nil) {
             self.childTweet = [[Tweet alloc] initWithDictionary:childTweetDictionary];

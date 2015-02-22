@@ -10,6 +10,7 @@
                 <outlet property="profilePicView" destination="JTt-DP-HQD" id="ZrN-L6-am7"/>
                 <outlet property="profileTopVerticalSpaceConstraint" destination="NXV-pJ-xLM" id="pcQ-BX-LsF"/>
                 <outlet property="screenNameLabel" destination="jox-hh-Ijd" id="8Ky-bR-oeL"/>
+                <outlet property="textCountLabel" destination="vGc-iI-esM" id="vVM-fA-6ya"/>
                 <outlet property="tweetInputPlaceholderView" destination="z7o-oj-81a" id="XST-aq-kDZ"/>
                 <outlet property="tweetInputTextView" destination="CMC-hK-eq8" id="LXP-vP-Iyc"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -55,17 +56,25 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="140" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vGc-iI-esM">
+                    <rect key="frame" x="291" y="8" width="21" height="14.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="JTt-DP-HQD" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="07i-u4-z8v"/>
                 <constraint firstItem="CMC-hK-eq8" firstAttribute="top" secondItem="JTt-DP-HQD" secondAttribute="bottom" id="CkC-Nz-jGq"/>
-                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lhR-dx-sw6" secondAttribute="trailing" constant="10" id="I5S-uN-aqt"/>
                 <constraint firstAttribute="bottom" secondItem="CMC-hK-eq8" secondAttribute="bottom" constant="8" id="Jud-c3-ody"/>
                 <constraint firstAttribute="trailing" secondItem="CMC-hK-eq8" secondAttribute="trailing" constant="8" id="LUC-zu-fCO"/>
                 <constraint firstItem="z7o-oj-81a" firstAttribute="trailing" secondItem="CMC-hK-eq8" secondAttribute="trailing" id="Lmc-lc-l54"/>
+                <constraint firstItem="vGc-iI-esM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="lhR-dx-sw6" secondAttribute="trailing" constant="8" id="Mx4-lm-QIj"/>
                 <constraint firstItem="JTt-DP-HQD" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="8" id="NXV-pJ-xLM"/>
+                <constraint firstItem="vGc-iI-esM" firstAttribute="top" secondItem="lhR-dx-sw6" secondAttribute="top" id="dIg-MH-l6B"/>
                 <constraint firstItem="jox-hh-Ijd" firstAttribute="top" secondItem="lhR-dx-sw6" secondAttribute="bottom" id="fC2-0J-T1y"/>
+                <constraint firstAttribute="trailing" secondItem="vGc-iI-esM" secondAttribute="trailing" constant="8" id="fGT-6e-J0J"/>
                 <constraint firstItem="z7o-oj-81a" firstAttribute="leading" secondItem="CMC-hK-eq8" secondAttribute="leading" id="fax-14-muv"/>
                 <constraint firstItem="jox-hh-Ijd" firstAttribute="leading" secondItem="lhR-dx-sw6" secondAttribute="leading" id="hdW-ku-8XW"/>
                 <constraint firstItem="CMC-hK-eq8" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="3" id="j2T-6n-JGP"/>

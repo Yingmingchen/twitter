@@ -14,7 +14,7 @@
 #import "TwitterClient.h"
 #import "MediaTweetCell.h"
 
-@interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, TweetDetailViewControllerDelegate>
+@interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, TweetDetailViewControllerDelegate, ComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
@@ -112,30 +112,45 @@
 
 - (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didFavoriteTweet:(BOOL)value {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
-    NSLog(@"get favorite change");
     NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
     [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(BOOL)value {
-    [self onCompose];
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(Tweet *)originlTweet {
+    [self onReply:originlTweet];
 }
 
 - (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value {
-    [self onCompose];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
+    Tweet *tweet = self.tweets[indexPath.row];
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+    [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
 }
 
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didFavoriteTweet:(BOOL)value {
-    [self.tableView reloadData];
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:tweetDetailViewController.indexPath, nil];
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(BOOL)value {
-    [self onCompose];
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(Tweet *)originalTweet {
+    [self onReply:originalTweet];
 }
 
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRetweetButtonClicked:(BOOL)value {
-    [self onCompose];
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:tweetDetailViewController.indexPath, nil];
+    Tweet *tweet = tweetDetailViewController.tweet;
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+    [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
 }
+
+- (void)ComposeViewController:(ComposeViewController *)composeViewController didTweet:(Tweet *)tweet {
+    // Insert the new tweet to the top
+    NSMutableArray *newTweets = [NSMutableArray arrayWithObject:tweet];
+    self.tweets = [newTweets arrayByAddingObjectsFromArray:self.tweets];
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - Table methods
 
@@ -170,6 +185,7 @@
     NSLog(@"selection");
     TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
     tdvc.tweet = self.tweets[indexPath.row];
+    tdvc.indexPath = indexPath;
     tdvc.delegate = self;
     [self.navigationController pushViewController:tdvc animated:YES];
 }
@@ -180,8 +196,17 @@
     [User logout];
 }
 
+- (void)onReply:(Tweet *)originalTweet {
+    ComposeViewController *cvc = [[ComposeViewController alloc] init];
+    cvc.originalTweet = originalTweet;
+    cvc.delegate = self;
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+    [self presentViewController:nvc animated:YES completion:nil];
+}
+
 - (void)onCompose {
     ComposeViewController *cvc = [[ComposeViewController alloc] init];
+    cvc.delegate = self;
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
     [self presentViewController:nvc animated:YES completion:nil];
 }

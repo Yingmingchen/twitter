@@ -64,11 +64,14 @@
     if (sender == self.retweetButton) {
         NSLog(@"Click retweet for %@", self.tweet);
         if (!self.tweet.retweeted) {
+            self.tweet.retweeted = YES;
             [self.delegate MediaTweetCell:self didRetweetButtonClicked:YES];
+            UIColor *highlightGreen = [UIColor  colorWithRed:119.0f/255.0f green:178.0f/255.0f blue:85.0f/255.0f alpha:1.0f];
+            self.retweetCountLabel.textColor = highlightGreen;
         }
     } else if (sender == self.replyButton){
         NSLog(@"Click reply");
-        [self.delegate MediaTweetCell:self didRelyButtonClicked:YES];
+        [self.delegate MediaTweetCell:self didRelyButtonClicked:self.tweet];
     } else if (sender == self.favoriteButton){
         NSLog(@"Click favorite");
         self.tweet.favorited = !self.tweet.favorited;
@@ -77,11 +80,14 @@
             [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_on-16"]];
             self.tweet.favoriteCount ++;
             self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", self.tweet.favoriteCount];
+            UIColor *highlightYellow = [UIColor  colorWithRed:255.0f/255.0f green:172.0f/255.0f blue:51.0f/255.0f alpha:1.0f];
+            self.favoriteCountLabel.textColor = highlightYellow;
             [[TwitterClient sharedInstance] favorite:self.tweet.tweetId completion:nil];
         } else {
             [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_default-16"]];
             self.tweet.favoriteCount --;
             self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", self.tweet.favoriteCount];
+            self.favoriteCountLabel.textColor = [UIColor lightGrayColor];
             [[TwitterClient sharedInstance] unfavorite:self.tweet.tweetId completion:nil];
         }
         [self.delegate MediaTweetCell:self didFavoriteTweet:self.tweet.favorited];
@@ -130,14 +136,20 @@
 
     if (tweetToShow.retweeted) {
         [self.retweetButton.imageView setImage:[UIImage imageNamed:@"retweet_on-16"]];
+        UIColor *highlightGreen = [UIColor  colorWithRed:119.0f/255.0f green:178.0f/255.0f blue:85.0f/255.0f alpha:1.0f];
+        self.retweetCountLabel.textColor = highlightGreen;
     } else {
         [self.retweetButton.imageView setImage:[UIImage imageNamed:@"retweet_default-16"]];
+        self.retweetCountLabel.textColor = [UIColor lightGrayColor];
     }
     
     if (tweetToShow.favorited) {
         [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_on-16"]];
+        UIColor *highlightYellow = [UIColor  colorWithRed:255.0f/255.0f green:172.0f/255.0f blue:51.0f/255.0f alpha:1.0f];
+        self.favoriteCountLabel.textColor = highlightYellow;
     } else {
         [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_default-16"]];
+        self.favoriteCountLabel.textColor = [UIColor lightGrayColor];
     }
     
     self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", tweetToShow.favoriteCount];

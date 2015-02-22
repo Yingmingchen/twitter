@@ -14,7 +14,7 @@
 @protocol MediaTweetCellDelegate <NSObject>
 
 - (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didFavoriteTweet:(BOOL)value;
-- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(BOOL)value;
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(Tweet *)originlTweet;
 - (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value;
 
 @end
