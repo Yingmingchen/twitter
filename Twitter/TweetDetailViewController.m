@@ -10,8 +10,10 @@
 #import "UIImageView+AFNetworking.h"
 #import "NSDate+DateTools.h"
 #import "TwitterClient.h"
+#import "MediaCollectionViewCell.h"
 
-@interface TweetDetailViewController ()
+@interface TweetDetailViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *mediaCollectionViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *profileTopConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *retweetIconTopConstraint;
@@ -51,6 +53,10 @@
     NSLog(@"view did load");
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onReply)];
+    
+    self.mediaCollectionView.delegate = self;
+    self.mediaCollectionView.dataSource = self;
+    [self.mediaCollectionView registerNib:[UINib nibWithNibName:@"MediaCollectionViewCell" bundle:nil] forCellWithReuseIdentifier:@"MediaCollectionViewCell"];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -69,6 +75,28 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark -- collection view methods
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    if (self.tweet.tweetPhotoUrls.count > 0) {
+        NSLog(@"photos %ld", self.tweet.tweetPhotoUrls.count);
+    }
+    return self.tweet.tweetPhotoUrls.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    MediaCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCollectionViewCell" forIndexPath:indexPath];
+    
+    NSString *url = self.tweet.tweetPhotoUrls[indexPath.row];
+    [cell.mediaImageView setImageWithURL:[NSURL URLWithString:url]];
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+}
+
 
 #pragma mark - event handlers
 

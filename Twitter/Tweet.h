@@ -24,7 +24,7 @@
 // TODO: add one for hashtags
 // TODO: add one for media/urls
 @property (nonatomic, strong) NSString *tweetPhotoUrl;
-// TODO: add one hashtag
+@property (nonatomic, strong) NSMutableArray *tweetPhotoUrls;
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 + (NSArray *)tweetsWithArray:(NSArray *)dictionaries;

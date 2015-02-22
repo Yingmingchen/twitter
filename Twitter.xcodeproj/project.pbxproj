@@ -28,6 +28,8 @@
 		9690A4791A9914A70096348B /* ComposeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A4771A9914A70096348B /* ComposeViewController.xib */; };
 		9690A47D1A993BB80096348B /* TweetDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A47B1A993BB80096348B /* TweetDetailViewController.m */; };
 		9690A47E1A993BB80096348B /* TweetDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A47C1A993BB80096348B /* TweetDetailViewController.xib */; };
+		9690A4821A9999B40096348B /* MediaCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4801A9999B40096348B /* MediaCollectionViewCell.m */; };
+		9690A4831A9999B40096348B /* MediaCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A4811A9999B40096348B /* MediaCollectionViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +79,9 @@
 		9690A47A1A993BB80096348B /* TweetDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetDetailViewController.h; sourceTree = "<group>"; };
 		9690A47B1A993BB80096348B /* TweetDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetDetailViewController.m; sourceTree = "<group>"; };
 		9690A47C1A993BB80096348B /* TweetDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetDetailViewController.xib; sourceTree = "<group>"; };
+		9690A47F1A9999B40096348B /* MediaCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaCollectionViewCell.h; sourceTree = "<group>"; };
+		9690A4801A9999B40096348B /* MediaCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaCollectionViewCell.m; sourceTree = "<group>"; };
+		9690A4811A9999B40096348B /* MediaCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MediaCollectionViewCell.xib; sourceTree = "<group>"; };
 		F4B08E525481200B33332AD5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +186,9 @@
 				9690A4701A9740330096348B /* MediaTweetCell.h */,
 				9690A4711A9740330096348B /* MediaTweetCell.m */,
 				9690A4721A9740330096348B /* MediaTweetCell.xib */,
+				9690A47F1A9999B40096348B /* MediaCollectionViewCell.h */,
+				9690A4801A9999B40096348B /* MediaCollectionViewCell.m */,
+				9690A4811A9999B40096348B /* MediaCollectionViewCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -316,6 +324,7 @@
 				9690A47E1A993BB80096348B /* TweetDetailViewController.xib in Resources */,
 				9690A46F1A970A130096348B /* TweetCell.xib in Resources */,
 				9690A43F1A9475450096348B /* LaunchScreen.xib in Resources */,
+				9690A4831A9999B40096348B /* MediaCollectionViewCell.xib in Resources */,
 				9690A43C1A9475450096348B /* Images.xcassets in Resources */,
 				9690A4791A9914A70096348B /* ComposeViewController.xib in Resources */,
 				9690A4741A9740330096348B /* MediaTweetCell.xib in Resources */,
@@ -377,6 +386,7 @@
 				9690A45F1A9482FF0096348B /* Tweet.m in Sources */,
 				9690A4731A9740330096348B /* MediaTweetCell.m in Sources */,
 				9690A4311A9475450096348B /* main.m in Sources */,
+				9690A4821A9999B40096348B /* MediaCollectionViewCell.m in Sources */,
 				9690A4571A94768F0096348B /* LoginViewController.m in Sources */,
 				9690A47D1A993BB80096348B /* TweetDetailViewController.m in Sources */,
 				9690A4661A963E190096348B /* TweetsViewController.m in Sources */,

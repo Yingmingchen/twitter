@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Twitter/TweetDetailViewController.m"
-            timestampString = "446273806.984286"
+            timestampString = "446275180.380925"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "-setTweet:"
             landmarkType = "5">
          </BreakpointContent>

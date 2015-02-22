@@ -33,11 +33,18 @@
         }
 
         self.tweetPhotoUrl = nil;
-        NSArray *mediaArray = [dictionary valueForKeyPath:@"entities.media"];
+        self.tweetPhotoUrls = [NSMutableArray array];
+        NSArray *mediaArray = [dictionary valueForKeyPath:@"extended_entities.media"];
         if (mediaArray != nil && mediaArray.count > 0) {
+            NSLog(@"media %@", dictionary);
             NSDictionary *mediaData = mediaArray[0];
             if ([mediaData[@"type"] isEqualToString:@"photo"]) {
                 self.tweetPhotoUrl = mediaData[@"media_url"];
+            }
+            for (NSDictionary *data in mediaArray) {
+                if ([data[@"type"] isEqualToString:@"photo"]) {
+                    [self.tweetPhotoUrls addObject:data[@"media_url"]];
+                }
             }
         }
     }
