@@ -22,12 +22,8 @@
         self.favoriteCount = [dictionary[@"favorite_count"] integerValue];
         self.favorited = [dictionary[@"favorited"] boolValue];
         self.tweetId = dictionary[@"id_str"];
-        NSLog(@"tweetId %@", self.tweetId);
         self.retweetCount = [dictionary[@"retweet_count"] integerValue];
         self.retweeted = [dictionary[@"retweeted"] boolValue];
-        if (self.retweeted) {
-            NSLog(@"my retweet tweet %@", dictionary);
-        }
         NSDictionary *childTweetDictionary = dictionary[@"retweeted_status"];
         if (childTweetDictionary != nil) {
             self.childTweet = [[Tweet alloc] initWithDictionary:childTweetDictionary];
@@ -39,7 +35,6 @@
         self.tweetPhotoUrls = [NSMutableArray array];
         NSArray *mediaArray = [dictionary valueForKeyPath:@"extended_entities.media"];
         if (mediaArray != nil && mediaArray.count > 0) {
-            NSLog(@"media %@", dictionary);
             NSDictionary *mediaData = mediaArray[0];
             if ([mediaData[@"type"] isEqualToString:@"photo"]) {
                 self.tweetPhotoUrl = mediaData[@"media_url"];

@@ -1,0 +1,1 @@
+PODS_MHVIDEOPHOTOGALLERY_OTHER_LDFLAGS = -framework "AVFoundation" -framework "Accelerate" -framework "CoreMedia" -framework "ImageIO" -framework "MediaPlayer" -framework "MessageUI" -framework "QuartzCore" -framework "Social"

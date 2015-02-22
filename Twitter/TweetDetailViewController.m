@@ -11,6 +11,9 @@
 #import "NSDate+DateTools.h"
 #import "TwitterClient.h"
 #import "MediaCollectionViewCell.h"
+#import "UIImageView+MHGallery.h"
+#import "MHMediaPreviewCollectionViewCell.h"
+#import "MHGalleryController.h"
 
 @interface TweetDetailViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -64,12 +67,10 @@
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self applyTopBarOffsetForOrientation:toInterfaceOrientation];
-    NSLog(@"rotate");
 }
 
 - (void)applyTopBarOffsetForOrientation:(UIInterfaceOrientation) orientation {
     BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
-    NSLog(@"orientation %ld", orientation);
     self.navigationBarHeight = UIDeviceOrientationIsLandscape(orientation) && isPhone ? 52 : 64;
 }
 
@@ -81,9 +82,6 @@
 #pragma mark -- collection view methods
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    if (self.tweet.tweetPhotoUrls.count > 0) {
-        NSLog(@"photos %ld", self.tweet.tweetPhotoUrls.count);
-    }
     return self.tweet.tweetPhotoUrls.count;
 }
 
@@ -92,11 +90,49 @@
     
     NSString *url = self.tweet.tweetPhotoUrls[indexPath.row];
     [cell.mediaImageView setImageWithURL:[NSURL URLWithString:url]];
+
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    
+    // Following are the gallery view using https://github.com/mariohahn/MHVideoPhotoGallery
+    MediaCollectionViewCell *cell = (MediaCollectionViewCell *)[self.mediaCollectionView cellForItemAtIndexPath:indexPath];
+
+    NSMutableArray *galleryData = [NSMutableArray array];
+    for (NSString *url in self.tweet.tweetPhotoUrls) {
+        MHGalleryItem *imageItem = [MHGalleryItem itemWithURL:url galleryType:MHGalleryTypeImage];
+        [galleryData addObject:imageItem];
+    }
+    //MHGalleryItem *youtube = [MHGalleryItem itemWithYoutubeVideoID:@"myYoutubeID"];
+    
+    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarHidden];
+    gallery.galleryItems = galleryData;
+    gallery.presentingFromImageView = cell.mediaImageView;
+    gallery.presentationIndex = indexPath.row;
+    gallery.UICustomization.hideShare = YES;
+    gallery.UICustomization.backButtonState = MHBackButtonStateWithoutBackArrow;
+    gallery.UICustomization.barStyle = UIBarStyleBlack;
+    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+    gallery.UICustomization.barTintColor = twitterBlue;
+    gallery.UICustomization.barButtonsTintColor = [UIColor whiteColor];
+    
+    __weak MHGalleryController *blockGallery = gallery;
+    
+    gallery.finishedCallback = ^(NSInteger currentIndex,UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode mhGalleryViewMode){
+        
+        NSIndexPath *newIndex = [NSIndexPath indexPathForRow:currentIndex inSection:0];
+        
+        [self.mediaCollectionView scrollToItemAtIndexPath:newIndex atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImageView *imageView = [(MediaCollectionViewCell *)[self.mediaCollectionView cellForItemAtIndexPath:newIndex] mediaImageView];
+            [blockGallery dismissViewControllerAnimated:YES dismissImageView:imageView completion:nil];
+        });
+        
+    };
+    [self presentMHGalleryController:gallery animated:YES completion:nil];
 }
 
 

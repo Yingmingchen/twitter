@@ -74,12 +74,10 @@
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self applyTopBarOffsetForOrientation:toInterfaceOrientation];
-    NSLog(@"rotate");
 }
 
 - (void)applyTopBarOffsetForOrientation:(UIInterfaceOrientation) orientation {
     BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
-    NSLog(@"orientation %ld", orientation);
     self.profileTopVerticalSpaceConstraint.constant = UIDeviceOrientationIsLandscape(orientation) && isPhone ? 52 : 64 + 8;
 }
 

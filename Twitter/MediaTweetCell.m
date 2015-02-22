@@ -62,7 +62,6 @@
 // @TODO: rename it
 - (IBAction)onReply:(id)sender {
     if (sender == self.retweetButton) {
-        NSLog(@"Click retweet for %@", self.tweet);
         if (!self.tweet.retweeted) {
             self.tweet.retweeted = YES;
             [self.delegate MediaTweetCell:self didRetweetButtonClicked:YES];
@@ -70,13 +69,10 @@
             self.retweetCountLabel.textColor = highlightGreen;
         }
     } else if (sender == self.replyButton){
-        NSLog(@"Click reply");
         [self.delegate MediaTweetCell:self didRelyButtonClicked:self.tweet];
     } else if (sender == self.favoriteButton){
-        NSLog(@"Click favorite");
         self.tweet.favorited = !self.tweet.favorited;
         if (self.tweet.favorited) {
-            NSLog(@"favorite id %@", self.tweet.tweetId);
             [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_on-16"]];
             self.tweet.favoriteCount ++;
             self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", self.tweet.favoriteCount];

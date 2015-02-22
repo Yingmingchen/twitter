@@ -79,9 +79,7 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
 // Helper to tweet
 - (void)tweet:(NSDictionary *)params completion:(void (^)(Tweet *tweet, NSError *error))completion {
     [self POST:@"1.1/statuses/update.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        NSLog(@"formData %@", formData);
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"tweet response %@", responseObject);
         Tweet *newTweet = [[Tweet alloc] initWithDictionary:responseObject];
         if (completion != nil) {
             completion(newTweet, nil);
@@ -97,9 +95,7 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
 - (void)retweet:(NSString *)tweetIdStr completion:(void (^)(NSError *error))completion {
     NSString *retweetEndpoint = [NSString stringWithFormat:@"1.1/statuses/retweet/%@.json", tweetIdStr];
     [self POST:retweetEndpoint parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        NSLog(@"formData %@", formData);
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"retweet response %@", responseObject);
         if (completion != nil) {
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -114,9 +110,7 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([tweetIdStr integerValue]) forKey:@"id"];
     [self POST:@"1.1/favorites/create.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        NSLog(@"formData %@", formData);
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"favorite response %@", responseObject);
         if (completion != nil) {
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -130,9 +124,7 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:@([tweetIdStr integerValue]) forKey:@"id"];
     [self POST:@"1.1/favorites/destroy.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        NSLog(@"formData %@", formData);
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"unfavorite response %@", responseObject);
         if (completion != nil) {
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {

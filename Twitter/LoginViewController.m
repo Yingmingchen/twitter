@@ -28,11 +28,9 @@ alpha:1.0]
 @implementation LoginViewController
 
 - (IBAction)onLogin:(id)sender {
-    NSLog(@"login");
     TwitterClient *client = [TwitterClient sharedInstance];
     [client loginWithCompletion:^(User *user, NSError *error) {
         if (user) {
-            NSLog(@"login user name %@", user.name);
             TweetsViewController *tvc = [[TweetsViewController alloc] init];
             UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:tvc];
             [self presentViewController:nvc animated:YES completion:nil];

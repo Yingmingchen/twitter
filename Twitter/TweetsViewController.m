@@ -74,11 +74,10 @@
     
     if (finalParams == nil) {
         finalParams = [[NSMutableDictionary alloc] init];
-        [finalParams setObject:@(40) forKey:@"count"];
+        [finalParams setObject:@(100) forKey:@"count"];
     }
 
     [[TwitterClient sharedInstance] homeTimelineWithParams:finalParams completion:^(NSArray *tweets, NSError *error) {
-        //NSLog(@"get tweets %@", tweets);
         self.tweets = tweets;
         self.backgroundView.hidden = YES;
         self.tableView.hidden = NO;
@@ -168,7 +167,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"count %ld", self.tweets.count);
     return self.tweets.count;
 }
 
@@ -182,13 +180,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSLog(@"selection");
     TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
     tdvc.tweet = self.tweets[indexPath.row];
     tdvc.indexPath = indexPath;
     tdvc.delegate = self;
     [self.navigationController pushViewController:tdvc animated:YES];
 }
+
+// TODO: need to figure out this issue: http://stackoverflow.com/questions/25937827/table-view-cells-jump-when-selected-on-ios-8
 
 #pragma mark -- helper methods
 
