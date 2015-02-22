@@ -8,12 +8,13 @@
 
 #import "TweetsViewController.h"
 #import "ComposeViewController.h"
+#import "TweetDetailViewController.h"
 #import "User.h"
 #import "Tweet.h"
 #import "TwitterClient.h"
 #import "MediaTweetCell.h"
 
-@interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, TweetDetailViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
@@ -107,6 +108,35 @@
     [self loadHomelineWithParams:nil];
 }
 
+#pragma mark - delegates
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didFavoriteTweet:(BOOL)value {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
+    NSLog(@"get favorite change");
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(BOOL)value {
+    [self onCompose];
+}
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value {
+    [self onCompose];
+}
+
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didFavoriteTweet:(BOOL)value {
+    [self.tableView reloadData];
+}
+
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(BOOL)value {
+    [self onCompose];
+}
+
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRetweetButtonClicked:(BOOL)value {
+    [self onCompose];
+}
+
 #pragma mark - Table methods
 
 // Make the separator line extends all the way to the left
@@ -131,13 +161,19 @@
     Tweet *tweet = self.tweets[indexPath.row];
     MediaTweetCell *mcell = [tableView dequeueReusableCellWithIdentifier:@"MediaTweetCell"];
     mcell.tweet = tweet;
-    
+    mcell.delegate = self;
     return mcell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSLog(@"selection");
+    TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
+    tdvc.tweet = self.tweets[indexPath.row];
+    tdvc.delegate = self;
+    [self.navigationController pushViewController:tdvc animated:YES];
 }
+
 #pragma mark -- helper methods
 
 - (void)onLogout {
@@ -145,7 +181,6 @@
 }
 
 - (void)onCompose {
-    NSLog(@"compose");
     ComposeViewController *cvc = [[ComposeViewController alloc] init];
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
     [self presentViewController:nvc animated:YES completion:nil];

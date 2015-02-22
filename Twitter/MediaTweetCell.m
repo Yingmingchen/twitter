@@ -9,6 +9,8 @@
 #import "MediaTweetCell.h"
 #import "UIImageView+AFNetworking.h"
 #import "NSDate+DateTools.h"
+#import "ComposeViewController.h"
+#import "TwitterClient.h"
 
 @interface MediaTweetCell ()
 
@@ -26,11 +28,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeStamp;
 @property (weak, nonatomic) IBOutlet UILabel *tweetText;
 @property (weak, nonatomic) IBOutlet UIImageView *tweetPhotoView;
-@property (weak, nonatomic) IBOutlet UIImageView *replyIcon;
-@property (weak, nonatomic) IBOutlet UIImageView *retweetIcon;
+@property (weak, nonatomic) IBOutlet UIButton *retweetButton;
 @property (weak, nonatomic) IBOutlet UILabel *retweetCountLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *favoriteIcon;
+@property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
 @property (weak, nonatomic) IBOutlet UILabel *favoriteCountLabel;
+@property (weak, nonatomic) IBOutlet UIButton *replyButton;
 
 @end
 
@@ -46,8 +48,6 @@
     
     self.tweetPhotoView.layer.cornerRadius = 3;
     self.tweetPhotoView.clipsToBounds = YES;
-    
-    //self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -55,6 +55,40 @@
     
     // Configure the view for the selected state
 }
+
+#pragma mark - event handlers
+
+// handle reply/retweet/favorite
+// @TODO: rename it
+- (IBAction)onReply:(id)sender {
+    if (sender == self.retweetButton) {
+        NSLog(@"Click retweet for %@", self.tweet);
+        if (!self.tweet.retweeted) {
+            [self.delegate MediaTweetCell:self didRetweetButtonClicked:YES];
+        }
+    } else if (sender == self.replyButton){
+        NSLog(@"Click reply");
+        [self.delegate MediaTweetCell:self didRelyButtonClicked:YES];
+    } else if (sender == self.favoriteButton){
+        NSLog(@"Click favorite");
+        self.tweet.favorited = !self.tweet.favorited;
+        if (self.tweet.favorited) {
+            NSLog(@"favorite id %@", self.tweet.tweetId);
+            [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_on-16"]];
+            self.tweet.favoriteCount ++;
+            self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", self.tweet.favoriteCount];
+            [[TwitterClient sharedInstance] favorite:self.tweet.tweetId completion:nil];
+        } else {
+            [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_default-16"]];
+            self.tweet.favoriteCount --;
+            self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", self.tweet.favoriteCount];
+            [[TwitterClient sharedInstance] unfavorite:self.tweet.tweetId completion:nil];
+        }
+        [self.delegate MediaTweetCell:self didFavoriteTweet:self.tweet.favorited];
+    }
+}
+
+#pragma mark - setters
 
 - (void)setTweet:(Tweet *)tweet {
     _tweet = tweet;
@@ -95,15 +129,15 @@
     }
 
     if (tweetToShow.retweeted) {
-        [self.retweetIcon setImage:[UIImage imageNamed:@"retweet_on-16"]];
+        [self.retweetButton.imageView setImage:[UIImage imageNamed:@"retweet_on-16"]];
     } else {
-        [self.retweetIcon setImage:[UIImage imageNamed:@"retweet_default-16"]];
+        [self.retweetButton.imageView setImage:[UIImage imageNamed:@"retweet_default-16"]];
     }
     
     if (tweetToShow.favorited) {
-        [self.favoriteIcon setImage:[UIImage imageNamed:@"favorite_on-16"]];
+        [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_on-16"]];
     } else {
-        [self.favoriteIcon setImage:[UIImage imageNamed:@"favorite_default-16"]];
+        [self.favoriteButton.imageView setImage:[UIImage imageNamed:@"favorite_default-16"]];
     }
     
     self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", tweetToShow.favoriteCount];

@@ -91,6 +91,39 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     }];
 }
 
+- (void)favorite:(NSString *)tweetIdStr completion:(void (^)(NSArray *tweets, NSError *error))completion {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@([tweetIdStr integerValue]) forKey:@"id"];
+    [self POST:@"1.1/favorites/create.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        NSLog(@"formData %@", formData);
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"favorite response %@", responseObject);
+        if (completion != nil) {
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"favorite failed %@", error);
+        if (completion != nil) {
+        }
+    }];
+}
+
+- (void)unfavorite:(NSString *)tweetIdStr completion:(void (^)(NSArray *tweets, NSError *error))completion {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@([tweetIdStr integerValue]) forKey:@"id"];
+    [self POST:@"1.1/favorites/destroy.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        NSLog(@"formData %@", formData);
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"unfavorite response %@", responseObject);
+        if (completion != nil) {
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"unfavorite failed %@", error);
+        if (completion != nil) {
+        }
+    }];
+}
+
+
 // Singleton
 + (TwitterClient *)sharedInstance {
     static TwitterClient *instance = nil;

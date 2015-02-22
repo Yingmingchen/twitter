@@ -13,7 +13,7 @@
 
 @property (nonatomic, assign) NSInteger favoriteCount;
 @property (nonatomic, assign) BOOL favorited;
-@property (nonatomic, assign) NSString *tweetId;
+@property (nonatomic, strong) NSString *tweetId;
 @property (nonatomic, assign) NSInteger retweetCount;
 @property (nonatomic, assign) BOOL retweeted;
 @property (nonatomic, strong) NSString *text; // Need to parse the text for retweet

@@ -21,4 +21,7 @@
 
 - (void)tweet:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion;
 
+- (void)favorite:(NSString *)tweetIdStr completion:(void (^)(NSArray *tweets, NSError *error))completion;
+- (void)unfavorite:(NSString *)tweetIdStr completion:(void (^)(NSArray *tweets, NSError *error))completion;
+
 @end

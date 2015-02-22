@@ -9,8 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "Tweet.h"
 
+@class MediaTweetCell;
+
+@protocol MediaTweetCellDelegate <NSObject>
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didFavoriteTweet:(BOOL)value;
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(BOOL)value;
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value;
+
+@end
+
 @interface MediaTweetCell : UITableViewCell
 
 @property (nonatomic, strong) Tweet * tweet;
+
+@property (nonatomic, weak) id<MediaTweetCellDelegate> delegate;
 
 @end
