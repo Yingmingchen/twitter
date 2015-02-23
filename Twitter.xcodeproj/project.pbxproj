@@ -20,8 +20,6 @@
 		9690A4621A9483450096348B /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4611A9483450096348B /* User.m */; };
 		9690A4661A963E190096348B /* TweetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4641A963E190096348B /* TweetsViewController.m */; };
 		9690A4671A963E190096348B /* TweetsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A4651A963E190096348B /* TweetsViewController.xib */; };
-		9690A46E1A970A130096348B /* TweetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A46C1A970A130096348B /* TweetCell.m */; };
-		9690A46F1A970A130096348B /* TweetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A46D1A970A130096348B /* TweetCell.xib */; };
 		9690A4731A9740330096348B /* MediaTweetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4711A9740330096348B /* MediaTweetCell.m */; };
 		9690A4741A9740330096348B /* MediaTweetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9690A4721A9740330096348B /* MediaTweetCell.xib */; };
 		9690A4781A9914A70096348B /* ComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4761A9914A70096348B /* ComposeViewController.m */; };
@@ -67,9 +65,6 @@
 		9690A4631A963E190096348B /* TweetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetsViewController.h; sourceTree = "<group>"; };
 		9690A4641A963E190096348B /* TweetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetsViewController.m; sourceTree = "<group>"; };
 		9690A4651A963E190096348B /* TweetsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetsViewController.xib; sourceTree = "<group>"; };
-		9690A46B1A970A130096348B /* TweetCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetCell.h; sourceTree = "<group>"; };
-		9690A46C1A970A130096348B /* TweetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetCell.m; sourceTree = "<group>"; };
-		9690A46D1A970A130096348B /* TweetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetCell.xib; sourceTree = "<group>"; };
 		9690A4701A9740330096348B /* MediaTweetCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaTweetCell.h; sourceTree = "<group>"; };
 		9690A4711A9740330096348B /* MediaTweetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaTweetCell.m; sourceTree = "<group>"; };
 		9690A4721A9740330096348B /* MediaTweetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MediaTweetCell.xib; sourceTree = "<group>"; };
@@ -180,9 +175,6 @@
 		9690A4681A9709B80096348B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				9690A46B1A970A130096348B /* TweetCell.h */,
-				9690A46C1A970A130096348B /* TweetCell.m */,
-				9690A46D1A970A130096348B /* TweetCell.xib */,
 				9690A4701A9740330096348B /* MediaTweetCell.h */,
 				9690A4711A9740330096348B /* MediaTweetCell.m */,
 				9690A4721A9740330096348B /* MediaTweetCell.xib */,
@@ -322,7 +314,6 @@
 			files = (
 				9690A4671A963E190096348B /* TweetsViewController.xib in Resources */,
 				9690A47E1A993BB80096348B /* TweetDetailViewController.xib in Resources */,
-				9690A46F1A970A130096348B /* TweetCell.xib in Resources */,
 				9690A43F1A9475450096348B /* LaunchScreen.xib in Resources */,
 				9690A4831A9999B40096348B /* MediaCollectionViewCell.xib in Resources */,
 				9690A43C1A9475450096348B /* Images.xcassets in Resources */,
@@ -390,7 +381,6 @@
 				9690A4571A94768F0096348B /* LoginViewController.m in Sources */,
 				9690A47D1A993BB80096348B /* TweetDetailViewController.m in Sources */,
 				9690A4661A963E190096348B /* TweetsViewController.m in Sources */,
-				9690A46E1A970A130096348B /* TweetCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

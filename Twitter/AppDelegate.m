@@ -26,12 +26,10 @@
     
     User *user = [User currentUser];
     if (user != nil) {
-        NSLog(@"current user %@", user.name);
         TweetsViewController *tvc = [[TweetsViewController alloc] init];
         UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:tvc];
         self.window.rootViewController = nvc;
     } else {
-        NSLog(@"no current user");
         LoginViewController *lvc = [[LoginViewController alloc] init];
         self.window.rootViewController = lvc;
     }

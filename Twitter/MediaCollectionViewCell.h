@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface MediaCollectionViewCell : UICollectionViewCell
+
 @property (weak, nonatomic) IBOutlet UIImageView *mediaImageView;
 
 @end

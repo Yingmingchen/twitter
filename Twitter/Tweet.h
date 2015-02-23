@@ -16,13 +16,12 @@
 @property (nonatomic, strong) NSString *tweetId;
 @property (nonatomic, assign) NSInteger retweetCount;
 @property (nonatomic, assign) BOOL retweeted;
-@property (nonatomic, strong) NSString *text; // Need to parse the text for retweet
-// E.g., text = "RT @jamiesmiller: Great visit to @BoxHQ today.  Rethinking collaboration in the enterprise - keep it coming!! #howtomorrowworks #gofaster";
+@property (nonatomic, strong) NSString *text;
 @property (nonatomic, strong) Tweet *childTweet; // for retweet/like/reply. For example, for retweet, it is under "retweeted_status"
 @property (nonatomic, strong) NSDate *createAt;
 @property (nonatomic, strong) User *user;
 // TODO: add one for hashtags
-// TODO: add one for media/urls
+// TODO: add one for other media/urls
 @property (nonatomic, strong) NSString *tweetPhotoUrl;
 @property (nonatomic, strong) NSMutableArray *tweetPhotoUrls;
 

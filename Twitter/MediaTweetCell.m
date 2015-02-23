@@ -16,7 +16,6 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *userProfileImageViewTopConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *timeStampTopConstraint;
-
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *tweetPhotoViewHeightConstraint;
 
 @property (weak, nonatomic) IBOutlet UIImageView *retweetStatusIcon;
@@ -39,7 +38,6 @@
 @implementation MediaTweetCell
 
 - (void)awakeFromNib {
-    // Initialization code
     // This is to fix some bug that sometimes autolayout causing text in label doesn't wrap properly
     self.textLabel.preferredMaxLayoutWidth = self.textLabel.frame.size.width;
     
@@ -52,8 +50,6 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-    
-    // Configure the view for the selected state
 }
 
 #pragma mark - event handlers
@@ -125,7 +121,7 @@
     if (tweetToShow.tweetPhotoUrl != nil) {
         [self.tweetPhotoView setImageWithURL:[NSURL URLWithString:tweetToShow.tweetPhotoUrl] placeholderImage:[UIImage imageNamed:@"Twitter_logo_blue"]];
         
-        // We need to lower the this constraint's priority to 999 instead of 1000, otherwise, we get constraint confliction
+        // We need to lower the priority of this constraint to 999 from 1000, otherwise, we get constraint confliction
         // involving UIView-Encapsulated-Layout-Height.
         // See http://stackoverflow.com/questions/25059443/what-is-nslayoutconstraint-uiview-encapsulated-layout-height-and-how-should-i.
         self.tweetPhotoViewHeightConstraint.constant = 150.0;

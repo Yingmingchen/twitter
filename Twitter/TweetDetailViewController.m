@@ -50,6 +50,7 @@
     self.title = @"Tweet";
     // Setup rotation related stuff to make sure our own elements below navigation bar
     // See http://stackoverflow.com/questions/23478724/autolayout-specify-spacing-between-view-and-navigation-bar
+    // TODO: consider adding a scroll view for the whole detail view or move them to table view
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
     [self applyTopBarOffsetForOrientation:currentOrientation];
     // Need to to do this here instead of inside setTweet because those IBOutlets were nil at that time.
@@ -99,7 +100,7 @@
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
     //
-    // Following are the gallery view using https://github.com/mariohahn/MHVideoPhotoGallery
+    // Following are the gallery view code using https://github.com/mariohahn/MHVideoPhotoGallery
     //
     
     MediaCollectionViewCell *cell = (MediaCollectionViewCell *)[self.mediaCollectionView cellForItemAtIndexPath:indexPath];
@@ -208,12 +209,8 @@
     [self updateRetweetUI:tweetToShow];
     
     self.timestampLabel.text = [tweetToShow.createAt formattedDateWithFormat:@"MM/d/yy, HH:mm"];
-    //    self.timeStamp.text = tweetToShow.createAt.shortTimeAgoSinceNow;
     
     if (tweetToShow.tweetPhotoUrls.count > 0) {
-        // We need to lower the this constraint's priority to 999 instead of 1000, otherwise, we get constraint confliction
-        // involving UIView-Encapsulated-Layout-Height.
-        // See http://stackoverflow.com/questions/25059443/what-is-nslayoutconstraint-uiview-encapsulated-layout-height-and-how-should-i.
         self.mediaCollectionViewHeightConstraint.constant = 150.0;
     } else {
         self.mediaCollectionViewHeightConstraint.constant = 0.0;

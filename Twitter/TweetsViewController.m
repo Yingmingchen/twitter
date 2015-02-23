@@ -34,34 +34,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    
+
+    // Set navigation bar style
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
     self.navigationController.navigationBar.barTintColor = twitterBlue;
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     [self.navigationController.navigationBar
      setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    // Hide the navigation bar at the beginning
+    self.navigationController.navigationBarHidden = YES;
+    self.backgroundView.backgroundColor = twitterBlue;
 
+    // Add buttons to navigation bar
     self.title = @"Home";
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Logout-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onLogout)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
     
+    // Setup table view
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.estimatedRowHeight = 265;
-    [self.tableView registerNib:[UINib nibWithNibName:@"TweetCell" bundle:nil] forCellReuseIdentifier:@"TweetCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"MediaTweetCell" bundle:nil] forCellReuseIdentifier:@"MediaTweetCell"];
-    
-    self.backgroundView.backgroundColor = twitterBlue;
     self.tableView.hidden = YES;
-    self.navigationController.navigationBarHidden = YES;
-    
+
     [self initAutoLoadingUISupport];
     
     self.tweets = [[NSMutableArray alloc] init];
-
     [self loadHomelineWithParams:nil];
 }
 
@@ -119,7 +119,7 @@
     [self.tableRefreshControl addTarget:self action:@selector(onPullDownRefresh) forControlEvents:UIControlEventValueChanged];
     [self.tableView insertSubview:self.tableRefreshControl atIndex:0];
     
-//    // For infinite loading
+    // For infinite loading
     UIView *tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 30)];
     self.infiniteLoadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.infiniteLoadingView.center = tableFooterView.center;
@@ -130,7 +130,6 @@
     self.isInfiniteLoading = NO;
     self.isLoadingOnTheFly = NO;
 }
-
 
 - (void)onPullDownRefresh {
     if (!self.isLoadingOnTheFly) {
@@ -165,13 +164,12 @@
 }
 
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(Tweet *)originalTweet {
-    // TODO: solve warning: Presenting view controllers on detached view controllers is discouraged
+    // TODO: resolve warning: Presenting view controllers on detached view controllers is discouraged
     [self onReply:originalTweet];
 }
 
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRetweetButtonClicked:(BOOL)value {
     NSArray *indexPathes = [[NSArray alloc] initWithObjects:tweetDetailViewController.indexPath, nil];
-    NSLog(@"retweet list %@", indexPathes);
     Tweet *tweet = tweetDetailViewController.tweet;
     [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
     [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
@@ -232,7 +230,7 @@
     [self.navigationController pushViewController:tdvc animated:YES];
 }
 
-// TODO: need to figure out this issue: http://stackoverflow.com/questions/25937827/table-view-cells-jump-when-selected-on-ios-8
+// TODO: need to fully solve this issue: http://stackoverflow.com/questions/25937827/table-view-cells-jump-when-selected-on-ios-8
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     Tweet *tweet = self.tweets[indexPath.row];
     if (tweet.tweetPhotoUrl != nil) {

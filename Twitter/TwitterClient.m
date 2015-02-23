@@ -28,8 +28,6 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     // To clear your previous login state
     [self.requestSerializer removeAccessToken];
     [self fetchRequestTokenWithPath:@"oauth/request_token" method:@"GET" callbackURL:[NSURL URLWithString:@"cptwitterdemo://oauth"] scope:nil success:^(BDBOAuthToken *requestToken) {
-        NSLog(@"Get request token %@", requestToken);
-        
         NSURL *authUrl = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.twitter.com/oauth/authorize?oauth_token=%@", requestToken.token]];
         [[UIApplication sharedApplication] openURL:authUrl];
     } failure:^(NSError *error) {
@@ -41,7 +39,6 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
 - (void)openURL:(NSURL *)url {
     // third step to get the access token
     [self fetchAccessTokenWithPath:@"oauth/access_token" method:@"POST" requestToken:[BDBOAuthToken tokenWithQueryString:url.query] success:^(BDBOAuthToken *accessToken) {
-        NSLog(@"get access token %@", accessToken);
         [self.requestSerializer saveAccessToken:accessToken];
         
         // Get current user info
@@ -49,7 +46,6 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
             User *user = [[User alloc] initWithDictionary:responseObject];
             [User setCurrentUser:user];
             self.loginCompletion(user, nil);
-            //NSLog(@"user data %@", user.name);
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Failed to get user data %@", error);
             self.loginCompletion(nil, error);
@@ -66,9 +62,7 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
 // Helper to pull the homeline
 - (void)homeTimelineWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion {
     [self GET:@"1.1/statuses/home_timeline.json" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //NSLog(@"tweets %@", responseObject);
         NSArray *tweets = [Tweet tweetsWithArray:responseObject];
-        //NSLog(@"response %@", responseObject);
         completion(tweets, nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Failed to get tweets with error %@", error);
@@ -97,10 +91,12 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     [self POST:retweetEndpoint parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completion != nil) {
+            completion(nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"favorite failed %@", error);
         if (completion != nil) {
+            completion(error);
         }
     }];
 }
@@ -112,10 +108,12 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     [self POST:@"1.1/favorites/create.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completion != nil) {
+            completion(nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"favorite failed %@", error);
         if (completion != nil) {
+            completion(error);
         }
     }];
 }
@@ -126,10 +124,12 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     [self POST:@"1.1/favorites/destroy.json" parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if (completion != nil) {
+            completion(nil);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"unfavorite failed %@", error);
         if (completion != nil) {
+            completion(error);
         }
     }];
 }
@@ -149,4 +149,5 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     
     return instance;
 }
+
 @end
