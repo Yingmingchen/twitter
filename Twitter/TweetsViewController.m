@@ -27,6 +27,7 @@
 @property (nonatomic, assign) BOOL isPullDownRefreshing;
 @property (nonatomic, assign) BOOL isInfiniteLoading;
 @property (nonatomic, assign) BOOL isLoadingOnTheFly;
+@property (nonatomic, assign) BOOL isInitLoading;
 
 @end
 
@@ -62,6 +63,7 @@
     [self initAutoLoadingUISupport];
     
     self.tweets = [[NSMutableArray alloc] init];
+    self.isInitLoading = YES;
     [self loadHomelineWithParams:nil];
 }
 
@@ -90,10 +92,16 @@
             } else {
                 self.tweets = [NSMutableArray arrayWithArray:tweets];
             }
+            
+            if (!self.isInitLoading) {
+                self.backgroundView.hidden = YES;
+                self.tableView.hidden = NO;
+                self.navigationController.navigationBarHidden = NO;
+            } else {
+                self.isInitLoading = NO;
+                [self loadCompletionAnimation];
+            }
 
-            self.backgroundView.hidden = YES;
-            self.tableView.hidden = NO;
-            self.navigationController.navigationBarHidden = NO;
             [self.tableView reloadData];
         } else {
             NSLog(@"failed to load home timeline data with error %@", error);
@@ -238,6 +246,31 @@
     } else {
         return 100.0;
     }
+}
+
+#pragma mark -- animations
+
+- (void) loadCompletionAnimation {
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut // UIViewAnimationOptionBeginFromCurrentState
+                     animations:(void (^)(void)) ^{
+                         self.twitterLogIconView.transform = CGAffineTransformMakeScale(0.8, 0.8);
+                     }
+                     completion:^(BOOL finished){
+                         [UIView animateWithDuration:0.8
+                                               delay:0
+                                             options:UIViewAnimationOptionCurveEaseInOut // UIViewAnimationOptionBeginFromCurrentState
+                                          animations:(void (^)(void)) ^{
+                                              self.twitterLogIconView.transform = CGAffineTransformMakeScale(5, 5);
+                                          }
+                                          completion:^(BOOL finished){
+                                              self.twitterLogIconView.transform = CGAffineTransformIdentity;
+                                              self.backgroundView.hidden = YES;
+                                              self.tableView.hidden = NO;
+                                              self.navigationController.navigationBarHidden = NO;
+                                          }];
+                     }];
 }
 
 #pragma mark -- helper methods

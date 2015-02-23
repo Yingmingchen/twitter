@@ -91,9 +91,25 @@
     MediaCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCollectionViewCell" forIndexPath:indexPath];
     
     NSString *url = self.tweet.tweetPhotoUrls[indexPath.row];
-    [cell.mediaImageView setImageWithURL:[NSURL URLWithString:url]];
+    [cell.mediaImageView setImageWithURL:[NSURL URLWithString:url] placeholderImage:[UIImage imageNamed:@"placeholder_image18"]];
 
     return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    CGFloat screenWidth = screenRect.size.width;
+    CGFloat screenHeight = screenRect.size.height;
+    
+    if (self.tweet.tweetPhotoUrls > 0) {
+        CGFloat width = screenWidth / self.tweet.tweetPhotoUrls.count;
+        return CGSizeMake(width, 150.f);
+    } else {
+        return CGSizeMake(screenWidth, 150.f);
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

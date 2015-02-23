@@ -119,7 +119,7 @@
     self.timeStamp.text = tweetToShow.createAt.shortTimeAgoSinceNow;
     
     if (tweetToShow.tweetPhotoUrl != nil) {
-        [self.tweetPhotoView setImageWithURL:[NSURL URLWithString:tweetToShow.tweetPhotoUrl] placeholderImage:[UIImage imageNamed:@"Twitter_logo_blue"]];
+        [self.tweetPhotoView setImageWithURL:[NSURL URLWithString:tweetToShow.tweetPhotoUrl] placeholderImage:[UIImage imageNamed:@"placeholder_image18"]];
         
         // We need to lower the priority of this constraint to 999 from 1000, otherwise, we get constraint confliction
         // involving UIView-Encapsulated-Layout-Height.
