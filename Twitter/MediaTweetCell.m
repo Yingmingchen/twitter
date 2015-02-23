@@ -62,6 +62,10 @@
 // @TODO: rename it
 - (IBAction)onReply:(id)sender {
     if (sender == self.retweetButton) {
+        if ([self.tweet.user.userId isEqualToString:[User currentUser].userId]) {
+            NSLog(@"Can't retweet your own tweet");
+            return;
+        }
         if (!self.tweet.retweeted) {
             self.tweet.retweeted = YES;
             [self.delegate MediaTweetCell:self didRetweetButtonClicked:YES];

@@ -11,6 +11,7 @@
 #import "NSDate+DateTools.h"
 #import "TwitterClient.h"
 #import "MediaCollectionViewCell.h"
+#import "ComposeViewController.h"
 #import "UIImageView+MHGallery.h"
 #import "MHMediaPreviewCollectionViewCell.h"
 #import "MHGalleryController.h"
@@ -97,7 +98,10 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
+    //
     // Following are the gallery view using https://github.com/mariohahn/MHVideoPhotoGallery
+    //
+    
     MediaCollectionViewCell *cell = (MediaCollectionViewCell *)[self.mediaCollectionView cellForItemAtIndexPath:indexPath];
 
     NSMutableArray *galleryData = [NSMutableArray array];
@@ -140,6 +144,10 @@
 
 - (IBAction)onButtonClick:(id)sender {
     if (sender == self.retweetButton) {
+        if ([self.tweet.user.userId isEqualToString:[User currentUser].userId]) {
+            NSLog(@"Can't retweet your own tweet");
+            return;
+        }
         if (!self.tweet.retweeted) {
             self.tweet.retweetCount ++;
             self.tweet.retweeted = YES;
