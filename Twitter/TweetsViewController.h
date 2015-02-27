@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ContainerViewController.h"
 
 @interface TweetsViewController : UIViewController
+
+- (TweetsViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController;
 
 @end

@@ -14,11 +14,13 @@
 #import "TwitterClient.h"
 #import "MediaTweetCell.h"
 
-@interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, TweetDetailViewControllerDelegate, ComposeViewControllerDelegate>
+@interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, TweetDetailViewControllerDelegate, ComposeViewControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
 @property (weak, nonatomic) IBOutlet UIImageView *twitterLogIconView;
+
+@property (nonatomic, weak) ContainerViewController *parentContainerViewController;
 
 @property (strong, nonatomic) NSMutableArray *tweets;
 @property (nonatomic, strong) UIRefreshControl *tableRefreshControl;
@@ -29,9 +31,20 @@
 @property (nonatomic, assign) BOOL isLoadingOnTheFly;
 @property (nonatomic, assign) BOOL isInitLoading;
 
+//- (IBAction)onPan:(UIPanGestureRecognizer *)sender;
+
 @end
 
 @implementation TweetsViewController
+
+- (TweetsViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController {
+    self = [super init];
+    if (self) {
+        self.parentContainerViewController = parentContainerViewController;
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -49,7 +62,7 @@
 
     // Add buttons to navigation bar
     self.title = @"Home";
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Logout-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onLogout)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"left-navigation-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
     
     // Setup table view
@@ -70,6 +83,15 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - gesture controls
+
+// Need to allow parent container to handle pan gesture while the table view scroll still working
+// See http://stackoverflow.com/questions/17614609/table-view-doesnt-scroll-when-i-use-gesture-recognizer
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 #pragma mark - load/reload methods
@@ -229,7 +251,10 @@
     return mcell;
 }
 
+
+// TODO: Disable selection when we are hidden (i.e., menu is on)
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"selected %@", indexPath);
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
     tdvc.tweet = self.tweets[indexPath.row];
@@ -275,8 +300,9 @@
 
 #pragma mark -- helper methods
 
-- (void)onLogout {
-    [User logout];
+- (void)onMenu {
+    [self.parentContainerViewController toggleMenu];
+    //[User logout];
 }
 
 - (void)onReply:(Tweet *)originalTweet {

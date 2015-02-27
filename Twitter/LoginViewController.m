@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "TwitterClient.h"
 #import "TweetsViewController.h"
+#import "ContainerViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface LoginViewController ()
@@ -24,9 +25,10 @@
     TwitterClient *client = [TwitterClient sharedInstance];
     [client loginWithCompletion:^(User *user, NSError *error) {
         if (user) {
-            TweetsViewController *tvc = [[TweetsViewController alloc] init];
-            UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:tvc];
-            [self presentViewController:nvc animated:YES completion:nil];
+            //TweetsViewController *tvc = [[TweetsViewController alloc] init];
+            ContainerViewController *cvc = [[ContainerViewController alloc] init];
+            //UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+            [self presentViewController:cvc animated:YES completion:nil];
         } else {
             UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Failed to login"
                                                                            message:[NSString stringWithFormat:@("%@"), error.localizedDescription]

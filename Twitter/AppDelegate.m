@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 #import "TweetsViewController.h"
+#import "ContainerViewController.h"
 #import "TwitterClient.h"
 #import "User.h"
 #import "Tweet.h"
@@ -26,9 +27,10 @@
     
     User *user = [User currentUser];
     if (user != nil) {
-        TweetsViewController *tvc = [[TweetsViewController alloc] init];
-        UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:tvc];
-        self.window.rootViewController = nvc;
+        // TweetsViewController *tvc = [[TweetsViewController alloc] init];
+        ContainerViewController *cvc = [[ContainerViewController alloc] init];
+        // UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+        self.window.rootViewController = cvc;
     } else {
         LoginViewController *lvc = [[LoginViewController alloc] init];
         self.window.rootViewController = lvc;

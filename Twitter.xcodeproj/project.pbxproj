@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		61888BF3E84CCE7D61429828 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E03F91E5B34B51B00D79DC1 /* libPods.a */; };
+		967A97EF1A9E50DA009CCC11 /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A97ED1A9E50DA009CCC11 /* ContainerViewController.m */; };
+		967A97F01A9E50DA009CCC11 /* ContainerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967A97EE1A9E50DA009CCC11 /* ContainerViewController.xib */; };
+		967A97F91A9E5155009CCC11 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A97F71A9E5155009CCC11 /* ProfileViewController.m */; };
+		967A97FA1A9E5155009CCC11 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967A97F81A9E5155009CCC11 /* ProfileViewController.xib */; };
+		967A98351A9EF52C009CCC11 /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A98331A9EF52C009CCC11 /* MenuViewController.m */; };
+		967A98361A9EF52C009CCC11 /* MenuViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967A98341A9EF52C009CCC11 /* MenuViewController.xib */; };
+		967A983A1A9F708B009CCC11 /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A98381A9F708B009CCC11 /* MenuCell.m */; };
+		967A983B1A9F708B009CCC11 /* MenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967A98391A9F708B009CCC11 /* MenuCell.xib */; };
+		967A983D1A9FEF30009CCC11 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 967A983C1A9FEF30009CCC11 /* QuartzCore.framework */; };
 		9690A4311A9475450096348B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4301A9475450096348B /* main.m */; };
 		9690A4341A9475450096348B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4331A9475450096348B /* AppDelegate.m */; };
 		9690A43C1A9475450096348B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9690A43B1A9475450096348B /* Images.xcassets */; };
@@ -43,6 +52,19 @@
 /* Begin PBXFileReference section */
 		0E03F91E5B34B51B00D79DC1 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		69F968F7D3BC483D96CFED4E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		967A97EC1A9E50DA009CCC11 /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
+		967A97ED1A9E50DA009CCC11 /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
+		967A97EE1A9E50DA009CCC11 /* ContainerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContainerViewController.xib; sourceTree = "<group>"; };
+		967A97F61A9E5155009CCC11 /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
+		967A97F71A9E5155009CCC11 /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
+		967A97F81A9E5155009CCC11 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
+		967A98321A9EF52C009CCC11 /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
+		967A98331A9EF52C009CCC11 /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
+		967A98341A9EF52C009CCC11 /* MenuViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuViewController.xib; sourceTree = "<group>"; };
+		967A98371A9F708B009CCC11 /* MenuCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuCell.h; sourceTree = "<group>"; };
+		967A98381A9F708B009CCC11 /* MenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuCell.m; sourceTree = "<group>"; };
+		967A98391A9F708B009CCC11 /* MenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuCell.xib; sourceTree = "<group>"; };
+		967A983C1A9FEF30009CCC11 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		9690A42B1A9475450096348B /* Twitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Twitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9690A42F1A9475450096348B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9690A4301A9475450096348B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -85,6 +107,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				967A983D1A9FEF30009CCC11 /* QuartzCore.framework in Frameworks */,
 				61888BF3E84CCE7D61429828 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,6 +204,9 @@
 				9690A47F1A9999B40096348B /* MediaCollectionViewCell.h */,
 				9690A4801A9999B40096348B /* MediaCollectionViewCell.m */,
 				9690A4811A9999B40096348B /* MediaCollectionViewCell.xib */,
+				967A98371A9F708B009CCC11 /* MenuCell.h */,
+				967A98381A9F708B009CCC11 /* MenuCell.m */,
+				967A98391A9F708B009CCC11 /* MenuCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -209,6 +235,15 @@
 				9690A47A1A993BB80096348B /* TweetDetailViewController.h */,
 				9690A47B1A993BB80096348B /* TweetDetailViewController.m */,
 				9690A47C1A993BB80096348B /* TweetDetailViewController.xib */,
+				967A97EC1A9E50DA009CCC11 /* ContainerViewController.h */,
+				967A97ED1A9E50DA009CCC11 /* ContainerViewController.m */,
+				967A97EE1A9E50DA009CCC11 /* ContainerViewController.xib */,
+				967A97F61A9E5155009CCC11 /* ProfileViewController.h */,
+				967A97F71A9E5155009CCC11 /* ProfileViewController.m */,
+				967A97F81A9E5155009CCC11 /* ProfileViewController.xib */,
+				967A98321A9EF52C009CCC11 /* MenuViewController.h */,
+				967A98331A9EF52C009CCC11 /* MenuViewController.m */,
+				967A98341A9EF52C009CCC11 /* MenuViewController.xib */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -216,6 +251,7 @@
 		B5F31A4F7BC3F645C6772682 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				967A983C1A9FEF30009CCC11 /* QuartzCore.framework */,
 				0E03F91E5B34B51B00D79DC1 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -317,9 +353,13 @@
 				9690A43F1A9475450096348B /* LaunchScreen.xib in Resources */,
 				9690A4831A9999B40096348B /* MediaCollectionViewCell.xib in Resources */,
 				9690A43C1A9475450096348B /* Images.xcassets in Resources */,
+				967A97FA1A9E5155009CCC11 /* ProfileViewController.xib in Resources */,
+				967A983B1A9F708B009CCC11 /* MenuCell.xib in Resources */,
 				9690A4791A9914A70096348B /* ComposeViewController.xib in Resources */,
+				967A98361A9EF52C009CCC11 /* MenuViewController.xib in Resources */,
 				9690A4741A9740330096348B /* MediaTweetCell.xib in Resources */,
 				9690A4581A94768F0096348B /* LoginViewController.xib in Resources */,
+				967A97F01A9E50DA009CCC11 /* ContainerViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,15 +412,19 @@
 			files = (
 				9690A45B1A94797E0096348B /* TwitterClient.m in Sources */,
 				9690A4341A9475450096348B /* AppDelegate.m in Sources */,
+				967A97EF1A9E50DA009CCC11 /* ContainerViewController.m in Sources */,
 				9690A4621A9483450096348B /* User.m in Sources */,
+				967A97F91A9E5155009CCC11 /* ProfileViewController.m in Sources */,
 				9690A4781A9914A70096348B /* ComposeViewController.m in Sources */,
 				9690A45F1A9482FF0096348B /* Tweet.m in Sources */,
 				9690A4731A9740330096348B /* MediaTweetCell.m in Sources */,
 				9690A4311A9475450096348B /* main.m in Sources */,
 				9690A4821A9999B40096348B /* MediaCollectionViewCell.m in Sources */,
 				9690A4571A94768F0096348B /* LoginViewController.m in Sources */,
+				967A98351A9EF52C009CCC11 /* MenuViewController.m in Sources */,
 				9690A47D1A993BB80096348B /* TweetDetailViewController.m in Sources */,
 				9690A4661A963E190096348B /* TweetsViewController.m in Sources */,
+				967A983A1A9F708B009CCC11 /* MenuCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
