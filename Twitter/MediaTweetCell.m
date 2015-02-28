@@ -33,6 +33,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *favoriteCountLabel;
 @property (weak, nonatomic) IBOutlet UIButton *replyButton;
 
+@property (weak, nonatomic) Tweet *tweetToShow;
+
 @end
 
 @implementation MediaTweetCell
@@ -46,6 +48,11 @@
     
     self.tweetPhotoView.layer.cornerRadius = 3;
     self.tweetPhotoView.clipsToBounds = YES;
+    
+    UITapGestureRecognizer *profileTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onProfilePicTapped)];
+    [profileTapGestureRecognizer setNumberOfTouchesRequired:1];
+    [profileTapGestureRecognizer setNumberOfTapsRequired:1];
+    [self.userProfileImageView addGestureRecognizer:profileTapGestureRecognizer];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -53,6 +60,12 @@
 }
 
 #pragma mark - event handlers
+
+- (void)onProfilePicTapped
+{
+    NSLog(@"TAP");
+    [self.delegate MediaTweetCell:self didProfilePicTapped:self.tweetToShow.user];
+}
 
 // handle reply/retweet/favorite
 // @TODO: rename it
@@ -109,6 +122,8 @@
         self.userProfileImageViewTopConstraint.constant = 8.0;
         self.timeStampTopConstraint.constant = 8.0;
     }
+    
+    self.tweetToShow = tweetToShow;
     
     [self.userProfileImageView setImageWithURL:[NSURL URLWithString:tweetToShow.user.profileImageUrl] placeholderImage:[UIImage imageNamed:@"default_profile_pic_normal_48"]];
     self.userName.text = tweetToShow.user.name;

@@ -13,6 +13,7 @@
 #import "Tweet.h"
 #import "TwitterClient.h"
 #import "MediaTweetCell.h"
+#import "ProfileViewController.h"
 
 @interface TweetsViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, TweetDetailViewControllerDelegate, ComposeViewControllerDelegate, UIGestureRecognizerDelegate>
 
@@ -180,6 +181,11 @@
     [self onReply:originlTweet];
 }
 
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didProfilePicTapped:(User *)user {
+    [self onProfilePicTapped:user];
+}
+
+
 - (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
     NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
@@ -303,6 +309,24 @@
 - (void)onMenu {
     [self.parentContainerViewController toggleMenu];
     //[User logout];
+}
+
+- (void)presentProfileView:(User *)user {
+    ProfileViewController *pvc = [[ProfileViewController alloc] init];
+    pvc.user = user;
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:pvc];
+    [self presentViewController:nvc animated:YES completion:nil];
+}
+
+- (void)onProfilePicTapped:(User *)user {
+    if (user.profileBannerImage == nil) {
+        [[TwitterClient sharedInstance] getProfileBanner:user.userId completion:^(NSDictionary *bannerData, NSError *error) {
+            [user setBannerUrl:bannerData];
+            [self presentProfileView:user];
+        }];
+    } else {
+        [self presentProfileView:user];
+    }
 }
 
 - (void)onReply:(Tweet *)originalTweet {

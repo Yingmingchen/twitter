@@ -25,6 +25,8 @@
 
 @end
 
+// TODO: handle all the delegates functions
+
 @implementation ProfileViewController
 
 - (ProfileViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController {
@@ -226,7 +228,11 @@
 
 
 - (void)onMenu {
-    [self.parentContainerViewController toggleMenu];
+    if (self.parentContainerViewController) {
+        [self.parentContainerViewController toggleMenu];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)setUser:(User *)user {

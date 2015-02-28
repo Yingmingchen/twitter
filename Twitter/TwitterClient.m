@@ -44,7 +44,6 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
         // Get current user info
         [self GET:@"1.1/account/verify_credentials.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             User *user = [[User alloc] initWithDictionary:responseObject];
-            NSLog(@"profile image %@", user.profileImageUrl);
             [self getProfileBanner:user.userId completion:^(NSDictionary *bannerData, NSError *error) {
                 [user setBannerUrl:bannerData];
                 [User setCurrentUser:user];
