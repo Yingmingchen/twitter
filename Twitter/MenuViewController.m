@@ -35,6 +35,8 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
 @property (nonatomic, strong) UINavigationController *mentionsViewNavigationController;
 @property (nonatomic, strong) UINavigationController *profileViewNavigationController;
 
+@property (nonatomic, strong) NSIndexPath *selectedItem;
+
 @end
 
 @implementation MenuViewController
@@ -61,13 +63,13 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
     
     // Set navigation bar style
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-    self.navigationController.navigationBar.barTintColor = twitterBlue;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     [self.navigationController.navigationBar
      setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+//    self.title = @"Explore";
     // Hide the navigation bar at the beginning
-    // self.navigationController.navigationBarHidden = YES;
+    //self.navigationController.navigationBarHidden = YES;
     
 //    // Add buttons to navigation bar
 //    self.title = @"Home";
@@ -79,8 +81,8 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView registerNib:[UINib nibWithNibName:@"MenuCell" bundle:nil] forCellReuseIdentifier:@"MenuCell"];
-    
-    self.tableView.rowHeight = 40;
+    self.selectedItem = nil;
+    self.tableView.rowHeight = 100;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -102,10 +104,10 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
     }
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+//{
+//    return 1;
+//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return MenuItemIndexMax;
@@ -118,6 +120,9 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
         case MenuItemIndexTimelines:
             [cell.iconView setImage:[UIImage imageNamed:@"timeline-24-blue"]];
             cell.titleLabel.text = @"Timelines";
+            if (self.selectedItem == nil) {
+                self.selectedItem = indexPath;
+            }
             break;
         case MenuItemIndexProfile:
             [cell.iconView setImage:[UIImage imageNamed:@"User-26-blue"]];
@@ -138,12 +143,27 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
             break;
     }
     
+    if (self.selectedItem != nil && indexPath.row == self.selectedItem.row) {
+        cell.titleLabel.textColor = [UIColor whiteColor];
+    } else {
+        cell.titleLabel.textColor = [UIColor lightGrayColor];
+    }
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-
+    MenuCell *selectedCell = (MenuCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    MenuCell *previousSelectedCell = (MenuCell *)[self.tableView cellForRowAtIndexPath:self.selectedItem];
+    
+    if (indexPath.row != self.selectedItem.row) {
+        previousSelectedCell.titleLabel.textColor = [UIColor lightGrayColor];
+        selectedCell.titleLabel.textColor = [UIColor whiteColor];
+    }
+    
+    self.selectedItem = indexPath;
+    
     switch (indexPath.row) {
         case MenuItemIndexTimelines:
             [self.parentContainerViewController displayContentController:self.tweetsViewNavigationController];

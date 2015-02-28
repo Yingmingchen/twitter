@@ -10,6 +10,8 @@
 #import "MenuViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
+#define D2R(x) (x * (M_PI/180.0)) // macro to convert degrees to radians
+
 @interface ContainerViewController ()
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contentViewLeadingConstraint;
@@ -127,14 +129,17 @@
 - (void)toggleMenu {
     CGFloat newCenterX;
     CGFloat newLeadingConstraint;
+    CGFloat newScale;
     
     if (self.isMenuVisible) {
         newCenterX = self.view.frame.size.width / 2;
         newLeadingConstraint = 0;
+        newScale = 1;
         self.isMenuVisible = NO;
     } else {
-        newCenterX = self.view.frame.size.width * 3/2 - 100;
-        newLeadingConstraint = self.view.frame.size.width - 100;
+        // newCenterX = self.view.frame.size.width * 3/2 - 200;
+        newLeadingConstraint = self.view.frame.size.width - 200;
+        newScale = 0.8;
         self.isMenuVisible = YES;
     }
     
@@ -144,6 +149,15 @@
     // [self.contentView setNeedsUpdateConstraints];
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         //self.contentView.center = CGPointMake(newCenterX, self.contentView.center.y);
+        self.contentView.transform = CGAffineTransformMakeScale(newScale, newScale);
+        self.leftMenuView.transform = CGAffineTransformMakeScale(newScale, newScale);
+        if (self.isMenuVisible) {
+            NSLog(@"toggle with transform");
+            //self.leftMenuView.layer.transform = CATransform3DRotate(self.leftMenuView.layer.transform, D2R(7.5), 0.0, 1.0, 0.0);
+            //CATransform3DScale(self.leftMenuView.layer.transform, 0.95, 0.95, 0.95);
+        } else {
+            //self.leftMenuView.layer.transform = CATransform3DIdentity;
+        }
         [self.contentView layoutIfNeeded];
     } completion:^(BOOL finished) {
     }];

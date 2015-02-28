@@ -14,12 +14,12 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" alpha="0.94999999999999996" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="88M-v0-cKm" userLabel="Left Menu View">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <rect key="frame" x="0.0" y="0.0" width="120" height="568"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lJk-oB-A30" userLabel="Content View">
@@ -31,10 +31,10 @@
                     </connections>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="lJk-oB-A30" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="09B-BE-L6t"/>
-                <constraint firstAttribute="trailing" secondItem="88M-v0-cKm" secondAttribute="trailing" id="6a4-G6-l2K"/>
+                <constraint firstAttribute="trailing" secondItem="88M-v0-cKm" secondAttribute="trailing" constant="200" id="6a4-G6-l2K"/>
                 <constraint firstAttribute="trailing" secondItem="lJk-oB-A30" secondAttribute="trailing" id="8aM-ve-NqN"/>
                 <constraint firstAttribute="bottom" secondItem="88M-v0-cKm" secondAttribute="bottom" id="E3r-s8-jwT"/>
                 <constraint firstItem="lJk-oB-A30" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Ogz-Yp-dN7"/>
