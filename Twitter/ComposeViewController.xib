@@ -23,6 +23,7 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_profile_pic_normal_48" translatesAutoresizingMaskIntoConstraints="NO" id="JTt-DP-HQD">
                     <rect key="frame" x="8" y="8" width="48" height="48"/>
+                    <gestureRecognizers/>
                     <constraints>
                         <constraint firstAttribute="width" constant="48" id="CPR-Ed-X1j"/>
                         <constraint firstAttribute="height" constant="48" id="uYZ-v2-uUs"/>

@@ -16,6 +16,7 @@
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didFavoriteTweet:(BOOL)value;
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(Tweet *)originalTweet;
 - (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRetweetButtonClicked:(BOOL)value;
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didProfilePicTapped:(User *)user;
 
 @end
 

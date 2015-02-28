@@ -11,17 +11,26 @@
 #import "UIImageView+AFNetworking.h"
 #import "TwitterClient.h"
 #import "MediaTweetCell.h"
+#import "ComposeViewController.h"
+#import "TweetDetailViewController.h"
 
-@interface ProfileViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, ProfileCellDelegate>
+@interface ProfileViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, ProfileCellDelegate, UIGestureRecognizerDelegate>
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bigProfileTableTopAlignment;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bigProfileLeadingConstraint;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *profileBannerHeightConstraint;
 @property (weak, nonatomic) IBOutlet UIImageView *profileBannerView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIImageView *bigProfileImageView;
 
 @property (nonatomic, weak) ContainerViewController *parentContainerViewController;
 
 @property (nonatomic, strong) NSMutableArray *tweets;
 @property (nonatomic, assign) BOOL isLoadingOnTheFly;
 @property (nonatomic, assign) BOOL isInfiniteLoading;
+@property (nonatomic, assign) CGFloat currentBannerHeightConstraint;
 
 @end
 
@@ -57,7 +66,7 @@
     self.navigationController.view.backgroundColor = [UIColor clearColor];
     self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
     // Hide the navigation bar at the beginning
-    //self.navigationController.navigationBarHidden = YES;
+    // self.navigationController.navigationBarHidden = YES;
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
     
@@ -68,6 +77,32 @@
     self.tableView.estimatedRowHeight = 150;
     [self.tableView registerNib:[UINib nibWithNibName:@"ProfileCell" bundle:nil] forCellReuseIdentifier:@"ProfileCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"MediaTweetCell" bundle:nil] forCellReuseIdentifier:@"MediaTweetCell"];
+    // This is to make sure that table view starts from the top instead of after the navigation bar
+    // See http://stackoverflow.com/questions/18900428/ios-7-uitableview-shows-under-status-bar
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
+    [self.bigProfileImageView setImageWithURL:[NSURL URLWithString:self.user.profileImageUrl] placeholderImage:[UIImage imageNamed:@"default_profile_pic_normal_48"]];
+    self.bigProfileImageView.layer.cornerRadius = 3;
+    self.bigProfileImageView.clipsToBounds = YES;
+    self.bigProfileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.bigProfileImageView.layer.borderWidth = 2.5;
+    
+    if (self.user.profileBannerImage != nil) {
+        NSLog(@"set profile banner image");
+        [self.profileBannerView setImageWithURL:[NSURL URLWithString:self.user.profileBannerImage] placeholderImage:[UIImage imageNamed:@"background"]];
+    } else {
+        // consider calling getBannerUrl()
+    }
+    
+    UIPanGestureRecognizer *tablePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
+    UIPanGestureRecognizer *bannerPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
+    // This is needed to capture vertical pan (which is already listened by default table view
+    // See http://stackoverflow.com/questions/10183584/uipangesturerecognizer-on-uitableviewcell-overrides-uitableviews-scroll-view-ge
+    tablePanGestureRecognizer.delegate = self;
+    bannerPanGestureRecognizer.delegate = self;
+    [self.tableView addGestureRecognizer:tablePanGestureRecognizer];
+    [self.profileBannerView addGestureRecognizer:bannerPanGestureRecognizer];
+    
     
     // TODO: since profile banner is loaded asyncly. May need a delegate from User class to this
     if (self.user.profileBannerImage != nil) {
@@ -137,6 +172,88 @@
     [self loadTimelineWithParams:nil dataSourceIndex:index];
 }
 
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didFavoriteTweet:(BOOL)value {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRelyButtonClicked:(Tweet *)originlTweet {
+    [self onReply:originlTweet];
+}
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didProfilePicTapped:(User *)user {
+    [self onProfilePicTapped:user];
+}
+
+
+- (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
+    Tweet *tweet = self.tweets[indexPath.row];
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+    [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
+}
+
+
+#pragma mark - gesture controls
+
+// Need to allow parent container to handle pan gesture while the table view scroll still working
+// See http://stackoverflow.com/questions/17614609/table-view-doesnt-scroll-when-i-use-gesture-recognizer
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return NO;
+}
+
+- (void)onPan:(UIPanGestureRecognizer *)sender {
+    CGPoint currentPoint = [sender locationInView:self.view];
+    CGPoint velocity = [sender velocityInView:self.view];
+    NSLog(@"on my pan");
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        self.currentBannerHeightConstraint = self.profileBannerHeightConstraint.constant;
+    } else if (sender.state == UIGestureRecognizerStateChanged) {
+        CGPoint translation = [sender translationInView:self.view];
+        CGFloat newHeight = (self.currentBannerHeightConstraint + translation.y);
+        if (newHeight >= 100) {
+            self.profileBannerHeightConstraint.constant = newHeight;
+            [self.view bringSubviewToFront:self.bigProfileImageView];
+        }
+
+        if (newHeight >= 100 && newHeight < 150) {
+            //self.bigProfileImageView.hidden = NO;
+            CGFloat scale = newHeight/150;
+            self.bigProfileImageView.transform = CGAffineTransformMakeScale(scale, scale);
+            //self.bigProfileTopConstraint.constant = newHeight + 32 - scale*48;
+            self.bigProfileTableTopAlignment.constant = scale*48 - 32;
+            //self.bigProfileLeadingConstraint.constant = 8 + 24 - 24*scale;
+        } else if (newHeight > 150){
+            //self.bigProfileImageView.hidden = NO;
+            self.bigProfileImageView.transform = CGAffineTransformIdentity;
+            self.bigProfileTableTopAlignment.constant = 16;
+        } else {
+            self.bigProfileTableTopAlignment.constant = 0;
+            [self.view bringSubviewToFront:self.profileBannerView];
+        }
+        
+        self.tableViewTopConstraint.constant = newHeight;
+        [self.view setNeedsLayout];
+        [self.view layoutIfNeeded];
+    } else if (sender.state == UIGestureRecognizerStateEnded) {
+        if (self.profileBannerHeightConstraint.constant >= 150) {
+            self.profileBannerHeightConstraint.constant = 150;
+            self.tableViewTopConstraint.constant = 150;
+            self.bigProfileTableTopAlignment.constant = 16;
+            [self.view setNeedsLayout];
+            [UIView animateWithDuration:0.8 delay:0 options:UIViewAnimationOptionTransitionNone animations:^{
+                //[self.profileBannerView layoutIfNeeded];
+                [self.view layoutIfNeeded];
+                [self.view bringSubviewToFront:self.bigProfileImageView];
+            } completion:^(BOOL finished) {
+            }];
+        } else { // moving left
+        }
+    }
+}
 
 #pragma mark - Table methods
 
@@ -152,30 +269,19 @@
     }
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    
-    //UIImage *myImage = [UIImage imageNamed:@"loginHeader.png"];
-    // UIImageView *imageView = self.profileBannerView;
-    //self.profileBannerView.hidden = YES;
-    //imageView.frame = self.profileBannerView.frame;
-    UIImageView *imageView = [[UIImageView alloc] init];
-    imageView.frame = CGRectMake(0, 0, self.view.frame.size.width, 150);
-    
-    if (self.user.profileBannerImage != nil) {
-        NSLog(@"set profile banner image");
-        [imageView setImageWithURL:[NSURL URLWithString:self.user.profileBannerImage] placeholderImage:[UIImage imageNamed:@"background"]];
-    } else {
-        // consider calling getBannerUrl()
-    }
-    
-    return imageView;
-    
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+//    CGRect newFrame = self.tableView.tableHeaderView.frame;
+//    newFrame.size.height = self.tableHeaderHeight;
+//    self.headerView.frame = newFrame;
+//    
+//    return self.headerView;
+//    
+//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 150;
+    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -225,7 +331,7 @@
     }
 }
 
-
+#pragma mark - helper functions
 
 - (void)onMenu {
     if (self.parentContainerViewController) {
@@ -235,17 +341,46 @@
     }
 }
 
+- (void)presentProfileView:(User *)user {
+    ProfileViewController *pvc = [[ProfileViewController alloc] init];
+    pvc.user = user;
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:pvc];
+    [self presentViewController:nvc animated:YES completion:nil];
+}
+
+- (void)onProfilePicTapped:(User *)user {
+    // Don't try to present your own profile again
+    if ([user.userId isEqualToString:self.user.userId]) {
+        return;
+    }
+    
+    if (user.profileBannerImage == nil) {
+        [[TwitterClient sharedInstance] getProfileBanner:user.userId completion:^(NSDictionary *bannerData, NSError *error) {
+            [user setBannerUrl:bannerData];
+            [self presentProfileView:user];
+        }];
+    } else {
+        [self presentProfileView:user];
+    }
+}
+
+- (void)onReply:(Tweet *)originalTweet {
+    ComposeViewController *cvc = [[ComposeViewController alloc] init];
+    cvc.originalTweet = originalTweet;
+    //cvc.delegate = self;
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+    [self presentViewController:nvc animated:YES completion:nil];
+}
+
+- (void)onCompose {
+    ComposeViewController *cvc = [[ComposeViewController alloc] init];
+    cvc.delegate = self;
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+    [self presentViewController:nvc animated:YES completion:nil];
+}
+
 - (void)setUser:(User *)user {
     _user = user;
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

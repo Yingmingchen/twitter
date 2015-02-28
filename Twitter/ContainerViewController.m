@@ -46,6 +46,11 @@
     self.childContentViewController = nil;
     
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+    self.navigationController.navigationBar.barTintColor = twitterBlue;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar
+     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
 
     [self displayMenuContainer];
     
@@ -183,4 +188,5 @@
         }
     }
 }
+
 @end

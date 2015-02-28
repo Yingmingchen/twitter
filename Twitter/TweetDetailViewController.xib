@@ -53,8 +53,9 @@
                         </mask>
                     </variation>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_profile_pic_normal_48" translatesAutoresizingMaskIntoConstraints="NO" id="Zgs-Dj-dS5">
+                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_profile_pic_normal_48" translatesAutoresizingMaskIntoConstraints="NO" id="Zgs-Dj-dS5">
                     <rect key="frame" x="8" y="32" width="48" height="48"/>
+                    <gestureRecognizers/>
                     <constraints>
                         <constraint firstAttribute="height" constant="48" id="AGe-o8-CFJ"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="48" id="BYO-c9-9Q4"/>
@@ -69,6 +70,9 @@
                             <exclude reference="x52-P2-bOJ"/>
                         </mask>
                     </variation>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="WBT-hj-LrB" appends="YES" id="qbQ-u4-p1p"/>
+                    </connections>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Apple retweeted" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Nc-s3-9hM">
                     <rect key="frame" x="64" y="8" width="98.5" height="16"/>
@@ -230,6 +234,11 @@
             </constraints>
             <point key="canvasLocation" x="151" y="172.5"/>
         </view>
+        <tapGestureRecognizer id="WBT-hj-LrB">
+            <connections>
+                <action selector="onProfilePicTap:" destination="-1" id="f5e-bt-42G"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="default_profile_pic_normal_48" width="48" height="48"/>

@@ -37,6 +37,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
 @property (weak, nonatomic) IBOutlet UIButton *replyButton;
 
+- (IBAction)onProfilePicTap:(UITapGestureRecognizer *)sender;
+
 @property (nonatomic, assign) NSInteger navigationBarHeight;
 @property (nonatomic, assign) NSInteger relativeProfileTopConstraint;
 
@@ -102,7 +104,6 @@
 {
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGFloat screenWidth = screenRect.size.width;
-    CGFloat screenHeight = screenRect.size.height;
     
     if (self.tweet.tweetPhotoUrls > 0) {
         CGFloat width = screenWidth / self.tweet.tweetPhotoUrls.count;
@@ -263,5 +264,8 @@
     } else {
         self.favoriteTextLabel.text = @"FAVORITES";
     }
+}
+- (IBAction)onProfilePicTap:(UITapGestureRecognizer *)sender {
+    [self.delegate TweetDetailViewController:self didProfilePicTapped:self.tweet.user];
 }
 @end

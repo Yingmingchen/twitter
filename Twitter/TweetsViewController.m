@@ -31,6 +31,8 @@
 @property (nonatomic, assign) BOOL isInfiniteLoading;
 @property (nonatomic, assign) BOOL isLoadingOnTheFly;
 @property (nonatomic, assign) BOOL isInitLoading;
+@property (nonatomic, assign) NSInteger lastLoadTweetsCount;
+@property (nonatomic, assign) TweetsViewSourceIndex tweetsViewSourceIndex;
 
 //- (IBAction)onPan:(UIPanGestureRecognizer *)sender;
 
@@ -38,10 +40,11 @@
 
 @implementation TweetsViewController
 
-- (TweetsViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController {
+- (TweetsViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController tweetsViewSourceIndex:(TweetsViewSourceIndex)tweetsViewSourceIndex {
     self = [super init];
     if (self) {
         self.parentContainerViewController = parentContainerViewController;
+        self.tweetsViewSourceIndex = tweetsViewSourceIndex;
     }
     
     return self;
@@ -62,9 +65,13 @@
     self.backgroundView.backgroundColor = twitterBlue;
 
     // Add buttons to navigation bar
-    self.title = @"Home";
+    if (self.tweetsViewSourceIndex == TweetsViewSourceIndexHomeTimeline) {
+        self.title = @"Home";
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
+    } else {
+        self.title = @"Mentions";
+    }
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"left-navigation-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
     
     // Setup table view
     self.tableView.delegate = self;
@@ -78,6 +85,7 @@
     
     self.tweets = [[NSMutableArray alloc] init];
     self.isInitLoading = YES;
+    self.lastLoadTweetsCount = 0;
     [self loadHomelineWithParams:nil];
 }
 
@@ -108,8 +116,9 @@
         [finalParams setObject:@(20) forKey:@"count"];
     }
 
-    [[TwitterClient sharedInstance] homeTimelineWithParams:finalParams completion:^(NSArray *tweets, NSError *error) {
+    void (^handleLoadCompletion)(NSArray *, NSError *) = ^(NSArray *tweets, NSError *error){
         if (!error) {
+            self.lastLoadTweetsCount = tweets.count;
             if (self.isInfiniteLoading) {
                 [self.tweets addObjectsFromArray:tweets];
             } else {
@@ -124,12 +133,28 @@
                 self.isInitLoading = NO;
                 [self loadCompletionAnimation];
             }
-
+            
             [self.tableView reloadData];
         } else {
+            self.backgroundView.hidden = YES;
+            self.tableView.hidden = NO;
+            self.navigationController.navigationBarHidden = NO;
+            self.lastLoadTweetsCount = 0;
             NSLog(@"failed to load home timeline data with error %@", error);
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Failed to load data"
+                                                                           message:[NSString stringWithFormat:@("%@"), error.localizedDescription]
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {
+                                                                  }];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:^{
+                [self.parentContainerViewController toggleMenu];
+            }];
         }
-
+        
         if (self.isPullDownRefreshing) {
             [self.tableRefreshControl endRefreshing];
         }
@@ -140,7 +165,13 @@
         self.isLoadingOnTheFly = NO;
         self.isPullDownRefreshing = NO;
         self.isInfiniteLoading = NO;
-    }];
+    };
+    
+    if (self.tweetsViewSourceIndex == TweetsViewSourceIndexHomeTimeline) {
+        [[TwitterClient sharedInstance] homeTimelineWithParams:finalParams completion:handleLoadCompletion];
+    } else if (self.tweetsViewSourceIndex == TweetsViewSourceIndexMentions) {
+        [[TwitterClient sharedInstance] mentionsWithParams:finalParams completion:handleLoadCompletion];
+    }
 }
 
 // Helper function to setup the UI for pull to refresh and infinite loading
@@ -211,6 +242,10 @@
     [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
 }
 
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didProfilePicTapped:(User *)user {
+    [self onProfilePicTapped:user];
+}
+
 - (void)ComposeViewController:(ComposeViewController *)composeViewController didTweet:(Tweet *)tweet {
     // Insert the new tweet to the top
     NSMutableArray *newTweets = [NSMutableArray arrayWithObject:tweet];
@@ -246,7 +281,7 @@
     mcell.delegate = self;
     
     // Infinite loading
-    if (indexPath.row == self.tweets.count - 1 && !self.isLoadingOnTheFly) {
+    if (indexPath.row == self.tweets.count - 1 && self.lastLoadTweetsCount == 20 && !self.isLoadingOnTheFly) {
         NSMutableDictionary *params = [NSMutableDictionary dictionary];
         // See https://dev.twitter.com/rest/public/timelines
         NSInteger max_id = [tweet.tweetId integerValue] - 1;

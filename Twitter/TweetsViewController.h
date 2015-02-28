@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "ContainerViewController.h"
 
+typedef NS_ENUM(NSInteger, TweetsViewSourceIndex) {
+    TweetsViewSourceIndexHomeTimeline = 0,
+    TweetsViewSourceIndexMentions = 1
+};
+
 @interface TweetsViewController : UIViewController
 
-- (TweetsViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController;
+- (TweetsViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController tweetsViewSourceIndex:(TweetsViewSourceIndex)tweetsViewSourceIndex;
 
 @end

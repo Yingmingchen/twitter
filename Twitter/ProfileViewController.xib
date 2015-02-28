@@ -6,8 +6,13 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController">
             <connections>
+                <outlet property="bigProfileImageView" destination="Xj8-Nh-Cn7" id="rhd-Up-sPw"/>
+                <outlet property="bigProfileLeadingConstraint" destination="6da-gq-HBh" id="zox-z3-UiU"/>
+                <outlet property="bigProfileTableTopAlignment" destination="D3o-IP-DXU" id="E5e-s1-cEj"/>
+                <outlet property="profileBannerHeightConstraint" destination="Ah7-0J-y9p" id="rRE-NU-PmN"/>
                 <outlet property="profileBannerView" destination="fey-EI-B8d" id="zLQ-qp-AeP"/>
                 <outlet property="tableView" destination="gho-bS-m1S" id="bPf-Uc-Uu7"/>
+                <outlet property="tableViewTopConstraint" destination="bWJ-IQ-DwN" id="3kD-Wg-7dS"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -16,23 +21,32 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fey-EI-B8d">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="120" id="Ah7-0J-y9p"/>
-                    </constraints>
-                </imageView>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="120" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="gho-bS-m1S">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="gho-bS-m1S">
+                    <rect key="frame" x="0.0" y="150" width="320" height="418"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
+                <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fey-EI-B8d">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="150"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="150" id="Ah7-0J-y9p"/>
+                    </constraints>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_profile_pic_normal_48" translatesAutoresizingMaskIntoConstraints="NO" id="Xj8-Nh-Cn7">
+                    <rect key="frame" x="8" y="134" width="48" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="48" id="BPs-Nu-vGo"/>
+                        <constraint firstAttribute="height" constant="48" id="xjL-5C-iE9"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="Xj8-Nh-Cn7" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="6da-gq-HBh"/>
+                <constraint firstItem="gho-bS-m1S" firstAttribute="top" secondItem="Xj8-Nh-Cn7" secondAttribute="top" constant="16" id="D3o-IP-DXU"/>
                 <constraint firstItem="fey-EI-B8d" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Jd6-b4-yGK"/>
                 <constraint firstAttribute="bottom" secondItem="gho-bS-m1S" secondAttribute="bottom" id="Kti-tX-bFg"/>
-                <constraint firstItem="gho-bS-m1S" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Sqr-TX-S0G"/>
                 <constraint firstItem="fey-EI-B8d" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Vfh-cG-nxI"/>
+                <constraint firstItem="gho-bS-m1S" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="150" id="bWJ-IQ-DwN"/>
                 <constraint firstAttribute="trailing" secondItem="fey-EI-B8d" secondAttribute="trailing" id="g8w-2b-nHc"/>
                 <constraint firstAttribute="trailing" secondItem="gho-bS-m1S" secondAttribute="trailing" id="kCp-ga-GER"/>
                 <constraint firstItem="gho-bS-m1S" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="rqz-IL-g3t"/>
@@ -40,6 +54,9 @@
             <point key="canvasLocation" x="325" y="243"/>
         </view>
     </objects>
+    <resources>
+        <image name="default_profile_pic_normal_48" width="48" height="48"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

@@ -28,9 +28,11 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
 @property (nonatomic, weak) ContainerViewController *parentContainerViewController;
 
 @property (nonatomic, strong) TweetsViewController *tweetsViewController;
+@property (nonatomic, strong) TweetsViewController *mentionsViewController;
 @property (nonatomic, strong) ProfileViewController *profileViewController;
 
 @property (nonatomic, strong) UINavigationController *tweetsViewNavigationController;
+@property (nonatomic, strong) UINavigationController *mentionsViewNavigationController;
 @property (nonatomic, strong) UINavigationController *profileViewNavigationController;
 
 @end
@@ -47,11 +49,13 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.tweetsViewController = [[TweetsViewController alloc] initWithParentContainerViewController:self.parentContainerViewController];
+    self.tweetsViewController = [[TweetsViewController alloc] initWithParentContainerViewController:self.parentContainerViewController tweetsViewSourceIndex:TweetsViewSourceIndexHomeTimeline];
+    self.mentionsViewController = [[TweetsViewController alloc] initWithParentContainerViewController:self.parentContainerViewController tweetsViewSourceIndex:TweetsViewSourceIndexMentions];
     self.profileViewController = [[ProfileViewController alloc] initWithParentContainerViewController:self.parentContainerViewController];
     [self.profileViewController setUser:[User currentUser]];
     self.tweetsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:self.tweetsViewController];
     self.profileViewNavigationController = [[UINavigationController alloc] initWithRootViewController:self.profileViewController];
+    self.mentionsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:self.mentionsViewController];
     
     [self.parentContainerViewController displayContentController:self.tweetsViewNavigationController];
     
@@ -121,7 +125,7 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
             break;
         case MenuItemIndexNotifications:
             [cell.iconView setImage:[UIImage imageNamed:@"notification-24-blue"]];
-            cell.titleLabel.text = @"Notifications";
+            cell.titleLabel.text = @"Mentions";
             break;
         case MenuItemIndexMessages:
             [cell.iconView setImage:[UIImage imageNamed:@"message-25-blue"]];
@@ -148,6 +152,7 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
             [self.parentContainerViewController displayContentController:self.profileViewNavigationController];
             break;
         case MenuItemIndexNotifications:
+            [self.parentContainerViewController displayContentController:self.mentionsViewNavigationController];
             break;
         case MenuItemIndexMessages:
             break;
