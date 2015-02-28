@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Twitter/MenuViewController.m"
-            timestampString = "446844919.470266"
+            timestampString = "446859685.742738"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -186,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Twitter/MenuViewController.m"
-            timestampString = "446844858.579141"
+            timestampString = "446859685.742738"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "157"
-            endingLineNumber = "157"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,12 +202,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Twitter/ContainerViewController.m"
-            timestampString = "446854205.598364"
+            timestampString = "446859145.370153"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "-toggleMenu"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
+            landmarkName = "-toggleMenuWithCompletion:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

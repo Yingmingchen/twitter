@@ -67,16 +67,7 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     [self.navigationController.navigationBar
      setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-//    self.title = @"Explore";
-    // Hide the navigation bar at the beginning
-    //self.navigationController.navigationBarHidden = YES;
-    
-//    // Add buttons to navigation bar
-//    self.title = @"Home";
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Logout-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onLogout)];
-//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
-
-    
+    self.navigationController.navigationBarHidden = YES;
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -91,23 +82,6 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
 }
 
 #pragma mark - Table methods
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:UIEdgeInsetsZero];
-    }
-    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
-        [cell setPreservesSuperviewLayoutMargins:NO];
-    }
-    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        [cell setLayoutMargins:UIEdgeInsetsZero];
-    }
-}
-
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-//{
-//    return 1;
-//}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return MenuItemIndexMax;

@@ -54,6 +54,13 @@
     [self.navigationController.navigationBar
      setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
 
+    CATransform3D left = CATransform3DIdentity;
+    //Add the perspective!!!
+    // Figure out what this value means
+    left.m34 = 1.0/ -500;
+    left = CATransform3DRotate(left, 90.0f * M_PI / 180.0f, 0, 1, 0);
+    self.leftMenuView.layer.transform = left;
+    
     [self displayMenuContainer];
     
     self.viewDidAppearCount = 0;
@@ -62,18 +69,11 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-//    if (self.viewDidAppearCount == 0) {
-//        [self displayMenuContainer];
-//    }
-    
     self.viewDidAppearCount ++;
     
-    // Has to set it here instead of in viewDidLoad (somehow there self.view.frame is incorrect)
     // TODO: handle the rotation
-//    self.contentView.frame = self.view.frame;
-//    self.leftMenuView.frame = self.view.frame;
-//    self.contentView.frame = self.view.frame;
 
+    // Border shadow
     CALayer *layer = self.contentView.layer;
     layer.shadowOffset = CGSizeMake(1, 1);
     layer.shadowColor = [[UIColor blackColor] CGColor];
@@ -102,15 +102,20 @@
     }
     self.childContentViewController = content;
     self.isMenuVisible = YES;
-    [self toggleMenu];
     [self displayChildController:content containerView:self.contentView];
+    [self toggleMenuWithCompletion:^(BOOL finished) {
+    }];
 }
 
+// TODO: try out to use auto layout constraints to make sure child is always taking the full screen of the container
+// Right now hardcoded to create the child frame/center based on overall view frame/center.
+// Otherwise, we will have see child is not taking the full content container while we are doing
+// scale animation later on against content container.
 - (void) displayChildController:(UIViewController*) child containerView:(UIView *)containerView {
     [self addChildViewController:child];                 // 1
-    child.view.frame = containerView.frame;           // 2
-    child.view.center = CGPointMake(containerView.center.x,
-                                containerView.center.y);
+    child.view.frame = self.view.frame;           // 2
+    child.view.center = CGPointMake(self.view.center.x,
+                                self.view.center.y);
     [containerView addSubview:child.view];
     NSLog(@"center (%lf, %lf)", child.view.center.x, child.view.center.y);
     NSLog(@"frame (%lf, %lf)", child.view.frame.size.width, child.view.frame.size.height);
@@ -127,6 +132,11 @@
 #pragma mark - gestures
 
 - (void)toggleMenu {
+    [self toggleMenuWithCompletion:^(BOOL finished) {
+    }];
+}
+
+- (void)toggleMenuWithCompletion:(void (^)(BOOL finished))completion {
     CGFloat newCenterX;
     CGFloat newLeadingConstraint;
     CGFloat newScale;
@@ -143,24 +153,49 @@
         self.isMenuVisible = YES;
     }
     
-    self.contentViewLeadingConstraint.constant = newLeadingConstraint;
-    self.contentViewTrailingConstraint.constant = 0 - newLeadingConstraint;
-    [self.contentView setNeedsLayout];
-    // [self.contentView setNeedsUpdateConstraints];
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        //self.contentView.center = CGPointMake(newCenterX, self.contentView.center.y);
-        self.contentView.transform = CGAffineTransformMakeScale(newScale, newScale);
-        self.leftMenuView.transform = CGAffineTransformMakeScale(newScale, newScale);
-        if (self.isMenuVisible) {
-            NSLog(@"toggle with transform");
-            //self.leftMenuView.layer.transform = CATransform3DRotate(self.leftMenuView.layer.transform, D2R(7.5), 0.0, 1.0, 0.0);
-            //CATransform3DScale(self.leftMenuView.layer.transform, 0.95, 0.95, 0.95);
-        } else {
-            //self.leftMenuView.layer.transform = CATransform3DIdentity;
-        }
-        [self.contentView layoutIfNeeded];
-    } completion:^(BOOL finished) {
-    }];
+    if (self.isMenuVisible) {
+        self.contentViewLeadingConstraint.constant = newLeadingConstraint;
+        self.contentViewTrailingConstraint.constant = 0 - newLeadingConstraint;
+        [self.contentView setNeedsLayout];
+        
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+            [self.contentView layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            // http://www.thinkandbuild.it/introduction-to-3d-drawing-in-core-animation-part-1/
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.contentView.transform = CGAffineTransformMakeScale(newScale, newScale);
+                CATransform3D left = CATransform3DIdentity;
+                //Add the perspective!!!
+                // Figure out what this value means
+                left.m34 = 1.0/ -500;
+                //left = CATransform3DRotate(left, .0f * M_PI / 180.0f, 0, 1, 0);
+                left = CATransform3DScale(left, newScale, newScale, newScale);
+                self.leftMenuView.layer.transform = left;
+            } completion:^(BOOL finished) {
+                completion(finished);
+            }];
+        }];
+    } else {
+        // [self.contentView setNeedsUpdateConstraints];
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+            self.contentView.transform = CGAffineTransformMakeScale(newScale, newScale);
+            CATransform3D left = CATransform3DIdentity;
+            left.m34 = 1.0/ -500;
+            left = CATransform3DRotate(left, 90.0f * M_PI / 180.0f, 0, 1, 0);
+            
+            self.leftMenuView.layer.transform = left;
+        } completion:^(BOOL finished) {
+            self.contentViewLeadingConstraint.constant = newLeadingConstraint;
+            self.contentViewTrailingConstraint.constant = 0 - newLeadingConstraint;
+            [self.contentView setNeedsLayout];
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self.contentView layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                completion(finished);
+            }];
+        }];
+        
+    }
 }
 
 // TODO: add tap gesture recongnizere to toggle menu as well when

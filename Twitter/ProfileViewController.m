@@ -14,7 +14,7 @@
 #import "ComposeViewController.h"
 #import "TweetDetailViewController.h"
 
-@interface ProfileViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, ProfileCellDelegate, UIGestureRecognizerDelegate>
+@interface ProfileViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, ProfileCellDelegate, UIGestureRecognizerDelegate, ComposeViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bigProfileTableTopAlignment;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bigProfileLeadingConstraint;
 
