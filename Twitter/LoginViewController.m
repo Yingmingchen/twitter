@@ -29,6 +29,7 @@
             ContainerViewController *cvc = [[ContainerViewController alloc] init];
             //UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
             [self presentViewController:cvc animated:YES completion:nil];
+            NSLog(@"user profile image %@", user.profileBannerImage);
         } else {
             UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Failed to login"
                                                                            message:[NSString stringWithFormat:@("%@"), error.localizedDescription]

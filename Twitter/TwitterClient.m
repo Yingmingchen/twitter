@@ -44,8 +44,12 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
         // Get current user info
         [self GET:@"1.1/account/verify_credentials.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
             User *user = [[User alloc] initWithDictionary:responseObject];
-            [User setCurrentUser:user];
-            self.loginCompletion(user, nil);
+            NSLog(@"profile image %@", user.profileImageUrl);
+            [self getProfileBanner:user.userId completion:^(NSDictionary *bannerData, NSError *error) {
+                [user setBannerUrl:bannerData];
+                [User setCurrentUser:user];
+                self.loginCompletion(user, nil);
+            }];
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Failed to get user data %@", error);
             self.loginCompletion(nil, error);
@@ -66,6 +70,26 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
         completion(tweets, nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Failed to get tweets with error %@", error);
+        completion(nil, error);
+    }];
+}
+
+- (void)userTimelineWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion {
+    [self GET:@"1.1/statuses/user_timeline.json" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSArray *tweets = [Tweet tweetsWithArray:responseObject];
+        completion(tweets, nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failed to get user timeline tweets with error %@", error);
+        completion(nil, error);
+    }];
+}
+
+- (void)userFavoritesWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion {
+    [self GET:@"1.1/favorites/list.json" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSArray *tweets = [Tweet tweetsWithArray:responseObject];
+        completion(tweets, nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failed to get user favorite tweets with error %@", error);
         completion(nil, error);
     }];
 }
@@ -134,6 +158,16 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
     }];
 }
 
+- (void)getProfileBanner:(NSString *)userIdStr completion:(void (^)(NSDictionary *bannerData, NSError *error))completion {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    [params setObject:@([userIdStr integerValue]) forKey:@"user_id"];
+    [self GET:@"1.1/users/profile_banner.json" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        completion(responseObject, nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failed to get user banner with error %@", error);
+        completion(nil, error);
+    }];
+}
 
 // Singleton
 + (TwitterClient *)sharedInstance {

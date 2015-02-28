@@ -44,6 +44,8 @@
 
     self.isMenuVisible = NO;
     self.childContentViewController = nil;
+    
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
 
     [self displayMenuContainer];
     

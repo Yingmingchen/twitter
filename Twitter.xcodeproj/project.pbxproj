@@ -17,6 +17,8 @@
 		967A983A1A9F708B009CCC11 /* MenuCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A98381A9F708B009CCC11 /* MenuCell.m */; };
 		967A983B1A9F708B009CCC11 /* MenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967A98391A9F708B009CCC11 /* MenuCell.xib */; };
 		967A983D1A9FEF30009CCC11 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 967A983C1A9FEF30009CCC11 /* QuartzCore.framework */; };
+		967A98411AA04655009CCC11 /* ProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A983F1AA04655009CCC11 /* ProfileCell.m */; };
+		967A98421AA04655009CCC11 /* ProfileCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 967A98401AA04655009CCC11 /* ProfileCell.xib */; };
 		9690A4311A9475450096348B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4301A9475450096348B /* main.m */; };
 		9690A4341A9475450096348B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9690A4331A9475450096348B /* AppDelegate.m */; };
 		9690A43C1A9475450096348B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9690A43B1A9475450096348B /* Images.xcassets */; };
@@ -65,6 +67,9 @@
 		967A98381A9F708B009CCC11 /* MenuCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuCell.m; sourceTree = "<group>"; };
 		967A98391A9F708B009CCC11 /* MenuCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuCell.xib; sourceTree = "<group>"; };
 		967A983C1A9FEF30009CCC11 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		967A983E1AA04655009CCC11 /* ProfileCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileCell.h; sourceTree = "<group>"; };
+		967A983F1AA04655009CCC11 /* ProfileCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileCell.m; sourceTree = "<group>"; };
+		967A98401AA04655009CCC11 /* ProfileCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileCell.xib; sourceTree = "<group>"; };
 		9690A42B1A9475450096348B /* Twitter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Twitter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9690A42F1A9475450096348B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9690A4301A9475450096348B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -207,6 +212,9 @@
 				967A98371A9F708B009CCC11 /* MenuCell.h */,
 				967A98381A9F708B009CCC11 /* MenuCell.m */,
 				967A98391A9F708B009CCC11 /* MenuCell.xib */,
+				967A983E1AA04655009CCC11 /* ProfileCell.h */,
+				967A983F1AA04655009CCC11 /* ProfileCell.m */,
+				967A98401AA04655009CCC11 /* ProfileCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -355,6 +363,7 @@
 				9690A43C1A9475450096348B /* Images.xcassets in Resources */,
 				967A97FA1A9E5155009CCC11 /* ProfileViewController.xib in Resources */,
 				967A983B1A9F708B009CCC11 /* MenuCell.xib in Resources */,
+				967A98421AA04655009CCC11 /* ProfileCell.xib in Resources */,
 				9690A4791A9914A70096348B /* ComposeViewController.xib in Resources */,
 				967A98361A9EF52C009CCC11 /* MenuViewController.xib in Resources */,
 				9690A4741A9740330096348B /* MediaTweetCell.xib in Resources */,
@@ -419,6 +428,7 @@
 				9690A45F1A9482FF0096348B /* Tweet.m in Sources */,
 				9690A4731A9740330096348B /* MediaTweetCell.m in Sources */,
 				9690A4311A9475450096348B /* main.m in Sources */,
+				967A98411AA04655009CCC11 /* ProfileCell.m in Sources */,
 				9690A4821A9999B40096348B /* MediaCollectionViewCell.m in Sources */,
 				9690A4571A94768F0096348B /* LoginViewController.m in Sources */,
 				967A98351A9EF52C009CCC11 /* MenuViewController.m in Sources */,

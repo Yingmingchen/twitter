@@ -20,10 +20,15 @@
 
 - (void)homeTimelineWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion;
 
+- (void)userTimelineWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion;
+
+- (void)userFavoritesWithParams:(NSDictionary *)params completion:(void (^)(NSArray *tweets, NSError *error))completion;
+
 - (void)tweet:(NSDictionary *)params completion:(void (^)(Tweet *tweet, NSError *error))completion;
 
 - (void)favorite:(NSString *)tweetIdStr completion:(void (^)(NSError *error))completion;
 - (void)unfavorite:(NSString *)tweetIdStr completion:(void (^)(NSError *error))completion;
 - (void)retweet:(NSString *)tweetIdStr completion:(void (^)(NSError *error))completion;
+- (void)getProfileBanner:(NSString *)userIdStr completion:(void (^)(NSDictionary *bannerData, NSError *error))completion;
 
 @end

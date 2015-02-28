@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "User.h"
+#import "ContainerViewController.h"
 
 @interface ProfileViewController : UIViewController
+
+@property (nonatomic, strong) User *user;
+
+- (ProfileViewController *)initWithParentContainerViewController:(ContainerViewController *)parentContainerViewController;
 
 @end

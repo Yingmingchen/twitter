@@ -6,6 +6,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController">
             <connections>
+                <outlet property="profileBannerView" destination="fey-EI-B8d" id="zLQ-qp-AeP"/>
+                <outlet property="tableView" destination="gho-bS-m1S" id="bPf-Uc-Uu7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -14,15 +16,24 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="gho-bS-m1S">
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fey-EI-B8d">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="120" id="Ah7-0J-y9p"/>
+                    </constraints>
+                </imageView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="120" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="gho-bS-m1S">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="fey-EI-B8d" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Jd6-b4-yGK"/>
                 <constraint firstAttribute="bottom" secondItem="gho-bS-m1S" secondAttribute="bottom" id="Kti-tX-bFg"/>
                 <constraint firstItem="gho-bS-m1S" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Sqr-TX-S0G"/>
+                <constraint firstItem="fey-EI-B8d" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Vfh-cG-nxI"/>
+                <constraint firstAttribute="trailing" secondItem="fey-EI-B8d" secondAttribute="trailing" id="g8w-2b-nHc"/>
                 <constraint firstAttribute="trailing" secondItem="gho-bS-m1S" secondAttribute="trailing" id="kCp-ga-GER"/>
                 <constraint firstItem="gho-bS-m1S" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="rqz-IL-g3t"/>
             </constraints>

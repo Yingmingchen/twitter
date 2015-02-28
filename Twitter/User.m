@@ -14,7 +14,7 @@ NSString * const UserDidLogoutNotification = @"UserDidLogoutNotification";
 
 @interface User()
 
-@property (nonatomic, strong) NSDictionary *dictionary;
+@property (nonatomic, strong) NSMutableDictionary *dictionary;
 
 @end
 
@@ -24,7 +24,7 @@ NSString * const UserDidLogoutNotification = @"UserDidLogoutNotification";
     self = [super init];
     
     if (self) {
-        self.dictionary = dictionary;
+        self.dictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
         self.name = dictionary[@"name"];
         self.screenname = dictionary[@"screen_name"];
         self.profileImageUrl = dictionary[@"profile_image_url"];
@@ -48,14 +48,21 @@ NSString * const UserDidLogoutNotification = @"UserDidLogoutNotification";
         } else {
             self.verified = NO;
         }
-        self.profileBannerImage = dictionary[@"profile_banner_url"];
+        self.profileBannerImage = dictionary[@"profile_banner_image"];
     }
-    
-    
     return self;
 }
 
+- (void)setBannerUrl:(NSDictionary *)bannerData {
+    if (bannerData != nil) {
+        self.profileBannerImage = [bannerData valueForKeyPath:@"sizes.mobile_retina.url"];
+        NSLog(@"banner image %@", self.profileBannerImage);
+        [self.dictionary setObject:self.profileBannerImage forKey:@"profile_banner_image"];
+    }
+}
+
 static User *_currentUser = nil;
+
 NSString * const kCurrentUserKey = @"kCurrentUserKey";
 
 + (User *)currentUser {

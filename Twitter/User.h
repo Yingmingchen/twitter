@@ -30,6 +30,7 @@ extern NSString * const UserDidLogoutNotification;
 @property (nonatomic, assign) BOOL verified;
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
+- (void)setBannerUrl:(NSDictionary *)bannerData;
 
 // Fake getter/setter for class property
 + (User *)currentUser;

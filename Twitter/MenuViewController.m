@@ -48,7 +48,8 @@ typedef NS_ENUM(NSInteger, MenuItemIndex) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tweetsViewController = [[TweetsViewController alloc] initWithParentContainerViewController:self.parentContainerViewController];
-    self.profileViewController = [[ProfileViewController alloc] init];
+    self.profileViewController = [[ProfileViewController alloc] initWithParentContainerViewController:self.parentContainerViewController];
+    [self.profileViewController setUser:[User currentUser]];
     self.tweetsViewNavigationController = [[UINavigationController alloc] initWithRootViewController:self.tweetsViewController];
     self.profileViewNavigationController = [[UINavigationController alloc] initWithRootViewController:self.profileViewController];
     

@@ -30,6 +30,7 @@
         // TweetsViewController *tvc = [[TweetsViewController alloc] init];
         ContainerViewController *cvc = [[ContainerViewController alloc] init];
         // UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+        NSLog(@"profile image %@", user.profileImageUrl);
         self.window.rootViewController = cvc;
     } else {
         LoginViewController *lvc = [[LoginViewController alloc] init];
