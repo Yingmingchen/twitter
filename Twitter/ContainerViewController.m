@@ -39,11 +39,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    self.title = @"container";
-    
-    NSLog(@"container view");
-
     self.isMenuVisible = NO;
     self.childContentViewController = nil;
     
@@ -53,10 +48,10 @@
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     [self.navigationController.navigationBar
      setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    self.navigationController.navigationBarHidden = YES;
 
+    // Set the initial rotation position for the menu
     CATransform3D left = CATransform3DIdentity;
-    //Add the perspective!!!
-    // Figure out what this value means
     left.m34 = 1.0/ -500;
     left = CATransform3DRotate(left, 90.0f * M_PI / 180.0f, 0, 1, 0);
     self.leftMenuView.layer.transform = left;
@@ -114,11 +109,8 @@
 - (void) displayChildController:(UIViewController*) child containerView:(UIView *)containerView {
     [self addChildViewController:child];                 // 1
     child.view.frame = self.view.frame;           // 2
-    child.view.center = CGPointMake(self.view.center.x,
-                                self.view.center.y);
+    child.view.center = CGPointMake(self.view.center.x, self.view.center.y);
     [containerView addSubview:child.view];
-    NSLog(@"center (%lf, %lf)", child.view.center.x, child.view.center.y);
-    NSLog(@"frame (%lf, %lf)", child.view.frame.size.width, child.view.frame.size.height);
     [child didMoveToParentViewController:self];          // 3
 }
 
@@ -147,7 +139,6 @@
         newScale = 1;
         self.isMenuVisible = NO;
     } else {
-        // newCenterX = self.view.frame.size.width * 3/2 - 200;
         newLeadingConstraint = self.view.frame.size.width - 200;
         newScale = 0.8;
         self.isMenuVisible = YES;
@@ -158,17 +149,15 @@
         self.contentViewTrailingConstraint.constant = 0 - newLeadingConstraint;
         [self.contentView setNeedsLayout];
         
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             [self.contentView layoutIfNeeded];
         } completion:^(BOOL finished) {
             // http://www.thinkandbuild.it/introduction-to-3d-drawing-in-core-animation-part-1/
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.contentView.transform = CGAffineTransformMakeScale(newScale, newScale);
                 CATransform3D left = CATransform3DIdentity;
-                //Add the perspective!!!
-                // Figure out what this value means
+                //Add the perspective
                 left.m34 = 1.0/ -500;
-                //left = CATransform3DRotate(left, .0f * M_PI / 180.0f, 0, 1, 0);
                 left = CATransform3DScale(left, newScale, newScale, newScale);
                 self.leftMenuView.layer.transform = left;
             } completion:^(BOOL finished) {
@@ -176,8 +165,7 @@
             }];
         }];
     } else {
-        // [self.contentView setNeedsUpdateConstraints];
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.contentView.transform = CGAffineTransformMakeScale(newScale, newScale);
             CATransform3D left = CATransform3DIdentity;
             left.m34 = 1.0/ -500;
@@ -198,10 +186,8 @@
     }
 }
 
-// TODO: add tap gesture recongnizere to toggle menu as well when
-
+// TODO: add tap gesture recongnizere to toggle menu as well
 - (IBAction)onPanContentView:(UIPanGestureRecognizer *)sender {
-    CGPoint currentPoint = [sender locationInView:self.view];
     CGPoint velocity = [sender velocityInView:self.view];
     
     // Disallow sliding right while we already reach right end
@@ -214,8 +200,6 @@
         self.currentContentViewLeadingConstraintValue = self.contentViewLeadingConstraint.constant;
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.view];
-        CGPoint newPoint = CGPointMake(self.currentContentViewCenter.x + translation.x, self.currentContentViewCenter.y);
-        //self.contentView.center = newPoint;
         CGFloat newLeadingConstraint = self.currentContentViewLeadingConstraintValue + translation.x;
         if (newLeadingConstraint < 0) {
             newLeadingConstraint = 0;

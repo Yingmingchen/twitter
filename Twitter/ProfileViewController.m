@@ -14,7 +14,7 @@
 #import "ComposeViewController.h"
 #import "TweetDetailViewController.h"
 
-@interface ProfileViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, ProfileCellDelegate, UIGestureRecognizerDelegate, ComposeViewControllerDelegate>
+@interface ProfileViewController () <UITableViewDataSource, UITableViewDelegate, MediaTweetCellDelegate, ProfileCellDelegate, UIGestureRecognizerDelegate, ComposeViewControllerDelegate, TweetDetailViewControllerDelegate>
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bigProfileTableTopAlignment;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bigProfileLeadingConstraint;
 
@@ -31,10 +31,13 @@
 @property (nonatomic, assign) BOOL isLoadingOnTheFly;
 @property (nonatomic, assign) BOOL isInfiniteLoading;
 @property (nonatomic, assign) CGFloat currentBannerHeightConstraint;
+@property (nonatomic, assign) CGFloat currentTableViewTopConstraint;
+@property (nonatomic, assign) BOOL allowDefaultTableScroll;
+
+@property (nonatomic, assign) NSInteger navigationStatusBarHeight;
+@property (nonatomic, assign) NSInteger desiredBannerHeight;
 
 @end
-
-// TODO: handle all the delegates functions
 
 @implementation ProfileViewController
 
@@ -65,10 +68,13 @@
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.view.backgroundColor = [UIColor clearColor];
     self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
-    // Hide the navigation bar at the beginning
-    // self.navigationController.navigationBarHidden = YES;
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
+    
+    // Setup rotation related stuff to make sure our own elements below navigation bar
+    // See http://stackoverflow.com/questions/23478724/autolayout-specify-spacing-between-view-and-navigation-bar
+    UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
+    [self applyTopBarOffsetForOrientation:currentOrientation];
     
     // Setup table view
     self.tableView.delegate = self;
@@ -80,6 +86,8 @@
     // This is to make sure that table view starts from the top instead of after the navigation bar
     // See http://stackoverflow.com/questions/18900428/ios-7-uitableview-shows-under-status-bar
     self.automaticallyAdjustsScrollViewInsets = NO;
+    self.allowDefaultTableScroll = YES;
+    self.desiredBannerHeight = 150;
     
     [self.bigProfileImageView setImageWithURL:[NSURL URLWithString:self.user.profileImageUrl] placeholderImage:[UIImage imageNamed:@"default_profile_pic_normal_48"]];
     self.bigProfileImageView.layer.cornerRadius = 3;
@@ -91,7 +99,7 @@
         NSLog(@"set profile banner image");
         [self.profileBannerView setImageWithURL:[NSURL URLWithString:self.user.profileBannerImage] placeholderImage:[UIImage imageNamed:@"background"]];
     } else {
-        // consider calling getBannerUrl()
+        [self.profileBannerView setImage:[UIImage imageNamed:@"background"]];
     }
     
     UIPanGestureRecognizer *tablePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
@@ -103,21 +111,22 @@
     [self.tableView addGestureRecognizer:tablePanGestureRecognizer];
     [self.profileBannerView addGestureRecognizer:bannerPanGestureRecognizer];
     
-    
-    // TODO: since profile banner is loaded asyncly. May need a delegate from User class to this
-    if (self.user.profileBannerImage != nil) {
-        NSLog(@"set profile banner image");
-        [self.profileBannerView setImageWithURL:[NSURL URLWithString:self.user.profileBannerImage] placeholderImage:[UIImage imageNamed:@"background"]];
-    } else {
-        // consider calling getBannerUrl()
-    }
-    
     [self loadTimelineWithParams:nil dataSourceIndex:TableDataSourceIndexTweets];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self applyTopBarOffsetForOrientation:toInterfaceOrientation];
+}
+
+- (void)applyTopBarOffsetForOrientation:(UIInterfaceOrientation) orientation {
+    BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
+    self.navigationStatusBarHeight = UIDeviceOrientationIsLandscape(orientation) && isPhone ? 52 : 64;
 }
 
 #pragma mark - loading functions
@@ -147,15 +156,7 @@
             NSLog(@"failed to load home timeline data with error %@", error);
         }
         
-        //        if (self.isPullDownRefreshing) {
-        //            [self.tableRefreshControl endRefreshing];
-        //        }
-        //        if (self.isInfiniteLoading) {
-        //            [self.infiniteLoadingView stopAnimating];
-        //        }
-        
         self.isLoadingOnTheFly = NO;
-        //        self.isPullDownRefreshing = NO;
         self.isInfiniteLoading = NO;
     };
     
@@ -186,7 +187,6 @@
     [self onProfilePicTapped:user];
 }
 
-
 - (void)MediaTweetCell:(MediaTweetCell *)mediaTweetCell didRetweetButtonClicked:(BOOL)value {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:mediaTweetCell];
     NSArray *indexPathes = [[NSArray alloc] initWithObjects:indexPath, nil];
@@ -195,6 +195,28 @@
     [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
 }
 
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didFavoriteTweet:(BOOL)value {
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:tweetDetailViewController.indexPath, nil];
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRelyButtonClicked:(Tweet *)originalTweet {
+    [self onReply:originalTweet];
+}
+
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didRetweetButtonClicked:(BOOL)value {
+    NSArray *indexPathes = [[NSArray alloc] initWithObjects:tweetDetailViewController.indexPath, nil];
+    Tweet *tweet = tweetDetailViewController.tweet;
+    [self.tableView reloadRowsAtIndexPaths:indexPathes withRowAnimation:UITableViewRowAnimationNone];
+    [[TwitterClient sharedInstance] retweet:tweet.tweetId completion:nil];
+}
+
+- (void)TweetDetailViewController:(TweetDetailViewController *)tweetDetailViewController didProfilePicTapped:(User *)user {
+    [self onProfilePicTapped:user];
+}
+
+- (void)ComposeViewController:(ComposeViewController *)composeViewController didTweet:(Tweet *)tweet {
+}
 
 #pragma mark - gesture controls
 
@@ -202,55 +224,71 @@
 // See http://stackoverflow.com/questions/17614609/table-view-doesnt-scroll-when-i-use-gesture-recognizer
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
+    // Disable default table scroll control. We will control it in onPan by ourselves
     return NO;
 }
 
 - (void)onPan:(UIPanGestureRecognizer *)sender {
-    CGPoint currentPoint = [sender locationInView:self.view];
     CGPoint velocity = [sender velocityInView:self.view];
-    NSLog(@"on my pan");
     if (sender.state == UIGestureRecognizerStateBegan) {
         self.currentBannerHeightConstraint = self.profileBannerHeightConstraint.constant;
+        self.currentTableViewTopConstraint = self.tableViewTopConstraint.constant;
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.view];
         CGFloat newHeight = (self.currentBannerHeightConstraint + translation.y);
-        if (newHeight >= 100) {
-            self.profileBannerHeightConstraint.constant = newHeight;
+        NSLog(@"translation y %lf", translation.y);
+        
+        // Keep updating the table position
+        self.tableViewTopConstraint.constant = self.currentTableViewTopConstraint + translation.y;
+
+        if (self.tableViewTopConstraint.constant + 32 < self.navigationStatusBarHeight) {
+            [self.view bringSubviewToFront:self.profileBannerView];
+        } else {
             [self.view bringSubviewToFront:self.bigProfileImageView];
         }
-
-        if (newHeight >= 100 && newHeight < 150) {
-            //self.bigProfileImageView.hidden = NO;
-            CGFloat scale = newHeight/150;
-            self.bigProfileImageView.transform = CGAffineTransformMakeScale(scale, scale);
-            //self.bigProfileTopConstraint.constant = newHeight + 32 - scale*48;
-            self.bigProfileTableTopAlignment.constant = scale*48 - 32;
-            //self.bigProfileLeadingConstraint.constant = 8 + 24 - 24*scale;
-        } else if (newHeight > 150){
-            //self.bigProfileImageView.hidden = NO;
-            self.bigProfileImageView.transform = CGAffineTransformIdentity;
-            self.bigProfileTableTopAlignment.constant = 16;
-        } else {
-            self.bigProfileTableTopAlignment.constant = 0;
-            [self.view bringSubviewToFront:self.profileBannerView];
-        }
         
-        self.tableViewTopConstraint.constant = newHeight;
+        
+        // If new table view is still below navigation bar, update the banner and profile image size
+        if (self.tableViewTopConstraint.constant > self.navigationStatusBarHeight) {
+            // Expand the banner
+            if (newHeight >= self.navigationStatusBarHeight) {
+                self.profileBannerHeightConstraint.constant = newHeight;
+            } else {
+            }
+        } else {
+        }
+
         [self.view setNeedsLayout];
         [self.view layoutIfNeeded];
     } else if (sender.state == UIGestureRecognizerStateEnded) {
-        if (self.profileBannerHeightConstraint.constant >= 150) {
-            self.profileBannerHeightConstraint.constant = 150;
-            self.tableViewTopConstraint.constant = 150;
+        // If we are below the desired position, move it back up
+        if (self.profileBannerHeightConstraint.constant >= self.desiredBannerHeight) {
+            self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
+            self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
             self.bigProfileTableTopAlignment.constant = 16;
             [self.view setNeedsLayout];
-            [UIView animateWithDuration:0.8 delay:0 options:UIViewAnimationOptionTransitionNone animations:^{
-                //[self.profileBannerView layoutIfNeeded];
+            [UIView animateWithDuration:0.8 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 [self.view layoutIfNeeded];
                 [self.view bringSubviewToFront:self.bigProfileImageView];
             } completion:^(BOOL finished) {
             }];
-        } else { // moving left
+        } else {
+            // Otherwise, simulate the normal table scroll based on velocity
+            // TODO: need to handle the case we scroll to the end of the table (maybe consider using a flag
+            // when reaching the last cell in the table
+            self.tableViewTopConstraint.constant = self.tableViewTopConstraint.constant + velocity.y / 4;
+            // If we are moving down, bound it at the desired position
+            if (velocity.y > 0 && self.tableViewTopConstraint.constant > self.desiredBannerHeight) {
+                self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
+                self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
+                // self.bigProfileImageView.transform = CGAffineTransformMakeScale(1, 1);
+            }
+            [self.view setNeedsLayout];
+            [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                [self.view layoutIfNeeded];
+                //[self.view bringSubviewToFront:self.bigProfileImageView];
+            } completion:^(BOOL finished) {
+            }];
         }
     }
 }
@@ -268,16 +306,6 @@
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
 }
-
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-//{
-//    CGRect newFrame = self.tableView.tableHeaderView.frame;
-//    newFrame.size.height = self.tableHeaderHeight;
-//    self.headerView.frame = newFrame;
-//    
-//    return self.headerView;
-//    
-//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
@@ -300,21 +328,19 @@
     MediaTweetCell *mcell = [tableView dequeueReusableCellWithIdentifier:@"MediaTweetCell"];
     mcell.tweet = tweet;
     mcell.delegate = self;
-    
-    // Infinite loading
-//    if (indexPath.row == self.tweets.count - 1 && !self.isLoadingOnTheFly) {
-//        NSMutableDictionary *params = [NSMutableDictionary dictionary];
-//        // See https://dev.twitter.com/rest/public/timelines
-//        NSInteger max_id = [tweet.tweetId integerValue] - 1;
-//        [params setObject:@(max_id) forKey:@"max_id"];
-//        self.isInfiniteLoading = YES;
-//        [self loadHomelineWithParams:params];
-//    }
     return mcell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    if (indexPath.row > 0) {
+        TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
+        tdvc.tweet = self.tweets[indexPath.row - 1];
+        tdvc.indexPath = indexPath;
+        tdvc.delegate = self;
+        UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:tdvc];
+        [self presentViewController:nvc animated:YES completion:nil];
+    }
 }
 
 // TODO: need to fully solve this issue: http://stackoverflow.com/questions/25937827/table-view-cells-jump-when-selected-on-ios-8
@@ -367,7 +393,7 @@
 - (void)onReply:(Tweet *)originalTweet {
     ComposeViewController *cvc = [[ComposeViewController alloc] init];
     cvc.originalTweet = originalTweet;
-    //cvc.delegate = self;
+    cvc.delegate = self;
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
     [self presentViewController:nvc animated:YES completion:nil];
 }

@@ -34,8 +34,6 @@
 @property (nonatomic, assign) NSInteger lastLoadTweetsCount;
 @property (nonatomic, assign) TweetsViewSourceIndex tweetsViewSourceIndex;
 
-//- (IBAction)onPan:(UIPanGestureRecognizer *)sender;
-
 @end
 
 @implementation TweetsViewController
@@ -292,16 +290,15 @@
     return mcell;
 }
 
-
 // TODO: Disable selection when we are hidden (i.e., menu is on)
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"selected %@", indexPath);
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
     tdvc.tweet = self.tweets[indexPath.row];
     tdvc.indexPath = indexPath;
     tdvc.delegate = self;
-    [self.navigationController pushViewController:tdvc animated:YES];
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:tdvc];
+    [self presentViewController:nvc animated:YES completion:nil];
 }
 
 // TODO: need to fully solve this issue: http://stackoverflow.com/questions/25937827/table-view-cells-jump-when-selected-on-ios-8

@@ -58,7 +58,15 @@
     // Need to to do this here instead of inside setTweet because those IBOutlets were nil at that time.
     [self renderTweet];
     
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+    self.navigationController.navigationBar.barTintColor = twitterBlue;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar
+     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onReply)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onBack)];
     
     self.mediaCollectionView.delegate = self;
     self.mediaCollectionView.dataSource = self;
@@ -192,6 +200,10 @@
     [self.delegate TweetDetailViewController:self didRelyButtonClicked:self.tweet];
 }
 
+- (void) onBack {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - custom setters
 
 - (void)setTweet:(Tweet *)tweet {
@@ -265,7 +277,9 @@
         self.favoriteTextLabel.text = @"FAVORITES";
     }
 }
+
 - (IBAction)onProfilePicTap:(UITapGestureRecognizer *)sender {
     [self.delegate TweetDetailViewController:self didProfilePicTapped:self.tweet.user];
 }
+
 @end

@@ -25,9 +25,7 @@
     TwitterClient *client = [TwitterClient sharedInstance];
     [client loginWithCompletion:^(User *user, NSError *error) {
         if (user) {
-            //TweetsViewController *tvc = [[TweetsViewController alloc] init];
             ContainerViewController *cvc = [[ContainerViewController alloc] init];
-            //UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
             [self presentViewController:cvc animated:YES completion:nil];
             NSLog(@"user profile image %@", user.profileBannerImage);
         } else {

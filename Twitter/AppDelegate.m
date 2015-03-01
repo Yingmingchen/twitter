@@ -27,11 +27,9 @@
     
     User *user = [User currentUser];
     if (user != nil) {
-        // TweetsViewController *tvc = [[TweetsViewController alloc] init];
         ContainerViewController *cvc = [[ContainerViewController alloc] init];
-        // UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
-        NSLog(@"profile image %@", user.profileImageUrl);
-        self.window.rootViewController = cvc;
+        UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:cvc];
+        self.window.rootViewController = nvc;
     } else {
         LoginViewController *lvc = [[LoginViewController alloc] init];
         self.window.rootViewController = lvc;
