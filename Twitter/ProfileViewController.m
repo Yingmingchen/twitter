@@ -87,19 +87,18 @@
     // See http://stackoverflow.com/questions/18900428/ios-7-uitableview-shows-under-status-bar
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.allowDefaultTableScroll = YES;
-    self.desiredBannerHeight = 150;
+    self.desiredBannerHeight = 100;
     
     [self.bigProfileImageView setImageWithURL:[NSURL URLWithString:self.user.profileImageUrl] placeholderImage:[UIImage imageNamed:@"default_profile_pic_normal_48"]];
-    self.bigProfileImageView.layer.cornerRadius = 3;
-    self.bigProfileImageView.clipsToBounds = YES;
-    self.bigProfileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.bigProfileImageView.layer.borderWidth = 2.5;
+    [self setdefaultBigProfilePicSetting];
+    UITapGestureRecognizer *bigProfileImageTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onbigProfilePicTapped:)];
+    bigProfileImageTapGestureRecognizer.delegate = self;
+    [self.bigProfileImageView addGestureRecognizer:bigProfileImageTapGestureRecognizer];
     
     if (self.user.profileBannerImage != nil) {
-        NSLog(@"set profile banner image");
-        [self.profileBannerView setImageWithURL:[NSURL URLWithString:self.user.profileBannerImage] placeholderImage:[UIImage imageNamed:@"background"]];
+        [self.profileBannerView setImageWithURL:[NSURL URLWithString:self.user.profileBannerImage] placeholderImage:[UIImage imageNamed:@"Background"]];
     } else {
-        [self.profileBannerView setImage:[UIImage imageNamed:@"background"]];
+        [self.profileBannerView setImage:[UIImage imageNamed:@"Background"]];
     }
     
     UIPanGestureRecognizer *tablePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
@@ -236,53 +235,60 @@
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.view];
         CGFloat newHeight = (self.currentBannerHeightConstraint + translation.y);
-        NSLog(@"translation y %lf", translation.y);
         
         // Keep updating the table position
         self.tableViewTopConstraint.constant = self.currentTableViewTopConstraint + translation.y;
 
-        if (self.tableViewTopConstraint.constant + 32 < self.navigationStatusBarHeight) {
-            [self.view bringSubviewToFront:self.profileBannerView];
-        } else {
-            [self.view bringSubviewToFront:self.bigProfileImageView];
-        }
-        
-        
-        // If new table view is still below navigation bar, update the banner and profile image size
-        if (self.tableViewTopConstraint.constant > self.navigationStatusBarHeight) {
+        // If new table view is still below navigation bar or we are moving up, update the banner and profile image size
+        if (self.tableViewTopConstraint.constant > self.navigationStatusBarHeight || velocity.y < 0) {
             // Expand the banner
             if (newHeight >= self.navigationStatusBarHeight) {
                 self.profileBannerHeightConstraint.constant = newHeight;
-            } else {
             }
-        } else {
         }
-
+        
+        if (self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
+            self.bigProfileTableTopAlignment.constant = 0 -  (0 - self.tableViewTopConstraint.constant + self.navigationStatusBarHeight - 16);
+        } else {
+            self.bigProfileTableTopAlignment.constant = 16;
+        }
         [self.view setNeedsLayout];
         [self.view layoutIfNeeded];
     } else if (sender.state == UIGestureRecognizerStateEnded) {
         // If we are below the desired position, move it back up
         if (self.profileBannerHeightConstraint.constant >= self.desiredBannerHeight) {
-            self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
-            self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
-            self.bigProfileTableTopAlignment.constant = 16;
-            [self.view setNeedsLayout];
-            [UIView animateWithDuration:0.8 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                [self.view layoutIfNeeded];
-                [self.view bringSubviewToFront:self.bigProfileImageView];
-            } completion:^(BOOL finished) {
-            }];
+            [self resetLayout];
         } else {
             // Otherwise, simulate the normal table scroll based on velocity
             // TODO: need to handle the case we scroll to the end of the table (maybe consider using a flag
             // when reaching the last cell in the table
-            self.tableViewTopConstraint.constant = self.tableViewTopConstraint.constant + velocity.y / 4;
-            // If we are moving down, bound it at the desired position
-            if (velocity.y > 0 && self.tableViewTopConstraint.constant > self.desiredBannerHeight) {
-                self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
-                self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
-                // self.bigProfileImageView.transform = CGAffineTransformMakeScale(1, 1);
+            if (velocity.y > 100 || velocity.y < -100) {
+                self.tableViewTopConstraint.constant = self.tableViewTopConstraint.constant + velocity.y / 4;
+                // If we are moving down, bound it at the desired position
+                if (velocity.y > 0 && self.tableViewTopConstraint.constant > self.desiredBannerHeight) {
+                    self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
+                    self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
+                } else if (velocity.y < 0 && self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
+                    self.profileBannerHeightConstraint.constant = self.navigationStatusBarHeight;
+                }
+                
+                if (self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
+                    self.bigProfileTableTopAlignment.constant = 0 -  (0 - self.tableViewTopConstraint.constant + self.navigationStatusBarHeight - 16);
+                } else {
+                    self.bigProfileTableTopAlignment.constant = 16;
+                }
             }
+            
+            // Move the profile pic to the center
+            if (self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
+                self.bigProfileLeadingConstraint.constant = self.view.frame.size.width - 48 - 8; // self.view.frame.size.width/2 - 24;
+                self.bigProfileImageView.layer.cornerRadius = 23;
+                self.bigProfileImageView.clipsToBounds = YES;
+                UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+                self.bigProfileImageView.layer.borderColor = twitterBlue.CGColor;
+                self.bigProfileImageView.layer.borderWidth = 1.5;
+            }
+            
             [self.view setNeedsLayout];
             [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                 [self.view layoutIfNeeded];
@@ -358,6 +364,31 @@
 }
 
 #pragma mark - helper functions
+
+- (void)setdefaultBigProfilePicSetting {
+    self.bigProfileTableTopAlignment.constant = 16;
+    self.bigProfileLeadingConstraint.constant = 8;
+    self.bigProfileImageView.layer.cornerRadius = 3;
+    self.bigProfileImageView.clipsToBounds = YES;
+    self.bigProfileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.bigProfileImageView.layer.borderWidth = 2.5;
+}
+
+- (void)resetLayout {
+    self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
+    self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
+    [self setdefaultBigProfilePicSetting];
+    [self.view setNeedsLayout];
+    [UIView animateWithDuration:0.8 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [self.view layoutIfNeeded];
+    } completion:^(BOOL finished) {
+    }];
+}
+
+// Back to original state
+- (void)onbigProfilePicTapped:(UITapGestureRecognizer *)sender {
+    [self resetLayout];
+}
 
 - (void)onMenu {
     if (self.parentContainerViewController) {

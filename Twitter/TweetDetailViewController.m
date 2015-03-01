@@ -278,6 +278,7 @@
     }
 }
 
+// TODO: not working properly here. Need to fix it.
 - (IBAction)onProfilePicTap:(UITapGestureRecognizer *)sender {
     [self.delegate TweetDetailViewController:self didProfilePicTapped:self.tweet.user];
 }
