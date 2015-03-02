@@ -187,7 +187,6 @@
     }
 }
 
-// TODO: add tap gesture recongnizere to toggle menu as well
 - (IBAction)onPanContentView:(UIPanGestureRecognizer *)sender {
     CGPoint velocity = [sender velocityInView:self.view];
     

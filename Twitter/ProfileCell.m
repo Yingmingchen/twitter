@@ -39,7 +39,6 @@
 
 - (void)setUser:(User *)user {
     _user = user;
-    NSLog(@"render user");
     [self.profileImageView setImageWithURL:[NSURL URLWithString:self.user.profileImageUrl] placeholderImage:[UIImage imageNamed:@"default_profile_pic_normal_48"]];
     self.userNameLabel.text = self.user.name;
     self.userScreenNameLabel.text = [NSString stringWithFormat:@"@%@", self.user.screenname];
@@ -48,7 +47,6 @@
 }
 
 - (IBAction)onDataSourceControl:(UISegmentedControl *)sender {
-    NSLog(@"source control %ld", sender.selectedSegmentIndex);
     [self.delegate dataSourceDidChange:sender.selectedSegmentIndex];
 }
 

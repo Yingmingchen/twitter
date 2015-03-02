@@ -232,6 +232,7 @@
     return NO;
 }
 
+// TODO: allow pan to toggle menu
 - (void)onPan:(UIPanGestureRecognizer *)sender {
     CGPoint velocity = [sender velocityInView:self.view];
     if (sender.state == UIGestureRecognizerStateBegan) {
@@ -282,9 +283,6 @@
                 }
                 // If we are moving down, bound it at the desired position
                 if (velocity.y > 0 && self.tableViewTopConstraint.constant > self.desiredBannerHeight) {
-//                    self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
-//                    [self removeProfileBannerBlurEffect];
-//                    self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
                     [self resetLayout];
                 } else if (velocity.y < 0 && self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
                     self.profileBannerHeightConstraint.constant = self.navigationStatusBarHeight;
