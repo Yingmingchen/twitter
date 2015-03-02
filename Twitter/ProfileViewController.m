@@ -25,6 +25,13 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIImageView *bigProfileImageView;
 
+@property (strong, nonatomic) UILabel *userNameLabel;
+@property (strong, nonatomic) UILabel *userScreenNameLabel;
+
+@property (strong, nonatomic) UIVisualEffectView *bannerBlurView;
+@property (strong, nonatomic) UIVisualEffectView *bannerVibrancyEffectView;
+@property (nonatomic, assign) BOOL isBannerBlurViewOn;
+
 @property (nonatomic, weak) ContainerViewController *parentContainerViewController;
 
 @property (nonatomic, strong) NSMutableArray *tweets;
@@ -54,22 +61,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    // Set navigation bar style to be transparent
-    // http://stackoverflow.com/questions/19082963/how-to-make-completely-transparent-navigation-bar-in-ios-7
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    [self.navigationController.navigationBar
-     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    self.navigationController.navigationBar.translucent = YES;
-    self.navigationController.view.backgroundColor = [UIColor clearColor];
-    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
-
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
+    
+    [self setNavigationBarStyle];
     
     // Setup rotation related stuff to make sure our own elements below navigation bar
     // See http://stackoverflow.com/questions/23478724/autolayout-specify-spacing-between-view-and-navigation-bar
@@ -86,8 +79,7 @@
     // This is to make sure that table view starts from the top instead of after the navigation bar
     // See http://stackoverflow.com/questions/18900428/ios-7-uitableview-shows-under-status-bar
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.allowDefaultTableScroll = YES;
-    self.desiredBannerHeight = 100;
+    self.allowDefaultTableScroll = NO;
     
     [self.bigProfileImageView setImageWithURL:[NSURL URLWithString:self.user.profileImageUrl] placeholderImage:[UIImage imageNamed:@"default_profile_pic_normal_48"]];
     [self setdefaultBigProfilePicSetting];
@@ -100,6 +92,19 @@
     } else {
         [self.profileBannerView setImage:[UIImage imageNamed:@"Background"]];
     }
+    self.desiredBannerHeight = 100;
+    self.bannerBlurView = nil;
+    self.bannerVibrancyEffectView = nil;
+    self.isBannerBlurViewOn = NO;
+    
+    self.userNameLabel = [[UILabel alloc] init];
+    self.userScreenNameLabel = [[UILabel alloc] init];
+    self.userNameLabel.text = self.user.name;
+    self.userNameLabel.textColor = [UIColor whiteColor];
+    self.userScreenNameLabel.textColor = [UIColor whiteColor];
+    self.userNameLabel.textAlignment = NSTextAlignmentCenter;
+    self.userScreenNameLabel.textAlignment = NSTextAlignmentCenter;
+    self.userScreenNameLabel.text = [NSString stringWithFormat:@"@%@", self.user.screenname];
     
     UIPanGestureRecognizer *tablePanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
     UIPanGestureRecognizer *bannerPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(onPan:)];
@@ -244,32 +249,46 @@
             // Expand the banner
             if (newHeight >= self.navigationStatusBarHeight) {
                 self.profileBannerHeightConstraint.constant = newHeight;
+                [self removeProfileBannerBlurEffect];
+            } else {
+                [self addProfileBannerBlurEffect];
             }
         }
         
         if (self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
+            // Persist the user profile image the bottom of the navigation bar
             self.bigProfileTableTopAlignment.constant = 0 -  (0 - self.tableViewTopConstraint.constant + self.navigationStatusBarHeight - 16);
         } else {
+            // align the profile image with table view
             self.bigProfileTableTopAlignment.constant = 16;
         }
         [self.view setNeedsLayout];
         [self.view layoutIfNeeded];
     } else if (sender.state == UIGestureRecognizerStateEnded) {
         // If we are below the desired position, move it back up
-        if (self.profileBannerHeightConstraint.constant >= self.desiredBannerHeight) {
+        if (self.profileBannerHeightConstraint.constant >= self.desiredBannerHeight && velocity.y <= 100 && velocity.y >= -100) {
             [self resetLayout];
         } else {
             // Otherwise, simulate the normal table scroll based on velocity
             // TODO: need to handle the case we scroll to the end of the table (maybe consider using a flag
             // when reaching the last cell in the table
             if (velocity.y > 100 || velocity.y < -100) {
-                self.tableViewTopConstraint.constant = self.tableViewTopConstraint.constant + velocity.y / 4;
+                CGFloat newTopConstraint = self.tableViewTopConstraint.constant + velocity.y / 4;;
+                // Make sure we don't stretch too much with current frame height. Otherwise, we will cause autolayout exception
+                if (newTopConstraint > self.view.frame.size.height) {
+                    self.tableViewTopConstraint.constant = self.view.frame.size.height;
+                } else {
+                    self.tableViewTopConstraint.constant = newTopConstraint;
+                }
                 // If we are moving down, bound it at the desired position
                 if (velocity.y > 0 && self.tableViewTopConstraint.constant > self.desiredBannerHeight) {
-                    self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
-                    self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
+//                    self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
+//                    [self removeProfileBannerBlurEffect];
+//                    self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
+                    [self resetLayout];
                 } else if (velocity.y < 0 && self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
                     self.profileBannerHeightConstraint.constant = self.navigationStatusBarHeight;
+                    [self addProfileBannerBlurEffect];
                 }
                 
                 if (self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
@@ -279,9 +298,9 @@
                 }
             }
             
-            // Move the profile pic to the center
+            // Move the profile pic to the right side and change it to circle
             if (self.tableViewTopConstraint.constant < self.navigationStatusBarHeight) {
-                self.bigProfileLeadingConstraint.constant = self.view.frame.size.width - 48 - 8; // self.view.frame.size.width/2 - 24;
+                self.bigProfileLeadingConstraint.constant = self.view.frame.size.width - 48 - 8;
                 self.bigProfileImageView.layer.cornerRadius = 23;
                 self.bigProfileImageView.clipsToBounds = YES;
                 UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
@@ -292,7 +311,6 @@
             [self.view setNeedsLayout];
             [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                 [self.view layoutIfNeeded];
-                //[self.view bringSubviewToFront:self.bigProfileImageView];
             } completion:^(BOOL finished) {
             }];
         }
@@ -365,6 +383,59 @@
 
 #pragma mark - helper functions
 
+// See http://www.binpress.com/tutorial/a-primer-on-ios-8-visual-effects/159
+- (void)addProfileBannerBlurEffect {
+    if (self.isBannerBlurViewOn) {
+        return;
+    }
+    self.isBannerBlurViewOn = YES;
+    // Blur Effect
+    if (self.bannerBlurView == nil) {
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        self.bannerBlurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        // Vibrancy Effect
+        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+        self.bannerVibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+        [self.bannerVibrancyEffectView addSubview: self.userNameLabel];
+        NSLog(@"username label %@", self.userNameLabel.text);
+    }
+    
+    [self.bannerBlurView setFrame:self.profileBannerView.bounds];
+    [self.profileBannerView addSubview:self.bannerBlurView];
+    [self.bannerVibrancyEffectView setFrame:self.profileBannerView.bounds];
+    //self.userNameLabel.frame = self.profileBannerView.frame;
+    [self.userNameLabel sizeToFit];
+    self.userNameLabel.center = self.profileBannerView.center;
+    
+    // Add Vibrancy View to Blur View
+    [self.bannerBlurView.contentView addSubview:self.bannerVibrancyEffectView];
+}
+
+- (void)removeProfileBannerBlurEffect {
+    if (self.isBannerBlurViewOn) {
+        [self.bannerBlurView removeFromSuperview];
+        self.isBannerBlurViewOn = NO;
+    }
+}
+
+- (void)setNavigationBarStyle {
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar
+     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+
+    // Set navigation bar style to be transparent
+    // http://stackoverflow.com/questions/19082963/how-to-make-completely-transparent-navigation-bar-in-ios-7
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.view.backgroundColor = [UIColor clearColor];
+    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
+}
+
 - (void)setdefaultBigProfilePicSetting {
     self.bigProfileTableTopAlignment.constant = 16;
     self.bigProfileLeadingConstraint.constant = 8;
@@ -375,6 +446,7 @@
 }
 
 - (void)resetLayout {
+    [self removeProfileBannerBlurEffect];
     self.profileBannerHeightConstraint.constant = self.desiredBannerHeight;
     self.tableViewTopConstraint.constant = self.profileBannerHeightConstraint.constant;
     [self setdefaultBigProfilePicSetting];
@@ -385,7 +457,7 @@
     }];
 }
 
-// Back to original state
+// Back to original state when clicked the user profile pic
 - (void)onbigProfilePicTapped:(UITapGestureRecognizer *)sender {
     [self resetLayout];
 }
