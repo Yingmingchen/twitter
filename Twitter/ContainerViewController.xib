@@ -28,6 +28,7 @@
                     <gestureRecognizers/>
                     <connections>
                         <outletCollection property="gestureRecognizers" destination="Kfe-yM-PfE" appends="YES" id="Bx1-TJ-ivh"/>
+                        <outletCollection property="gestureRecognizers" destination="mr9-Vu-bxh" appends="YES" id="aK4-tk-YIi"/>
                     </connections>
                 </view>
             </subviews>
@@ -50,6 +51,11 @@
                 <outlet property="delegate" destination="lJk-oB-A30" id="bdc-kp-0E9"/>
             </connections>
         </panGestureRecognizer>
+        <tapGestureRecognizer id="mr9-Vu-bxh">
+            <connections>
+                <action selector="onTapContentView:" destination="-1" id="VGE-u2-9K6"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

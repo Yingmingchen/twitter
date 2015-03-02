@@ -397,15 +397,14 @@
         UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
         self.bannerVibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
         [self.bannerVibrancyEffectView addSubview: self.userNameLabel];
-        NSLog(@"username label %@", self.userNameLabel.text);
     }
     
     [self.bannerBlurView setFrame:self.profileBannerView.bounds];
     [self.profileBannerView addSubview:self.bannerBlurView];
     [self.bannerVibrancyEffectView setFrame:self.profileBannerView.bounds];
-    //self.userNameLabel.frame = self.profileBannerView.frame;
+    self.userNameLabel.frame = self.navigationController.navigationBar.frame;
     [self.userNameLabel sizeToFit];
-    self.userNameLabel.center = self.profileBannerView.center;
+    self.userNameLabel.center = self.navigationController.navigationBar.center;
     
     // Add Vibrancy View to Blur View
     [self.bannerBlurView.contentView addSubview:self.bannerVibrancyEffectView];

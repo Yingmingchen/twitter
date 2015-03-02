@@ -52,24 +52,7 @@
     [super viewDidLoad];
 
     // Set navigation bar style
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-    self.navigationController.navigationBar.barTintColor = twitterBlue;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    [self.navigationController.navigationBar
-     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-    // Hide the navigation bar at the beginning
-    self.navigationController.navigationBarHidden = YES;
-    self.backgroundView.backgroundColor = twitterBlue;
-
-    // Add buttons to navigation bar
-    if (self.tweetsViewSourceIndex == TweetsViewSourceIndexHomeTimeline) {
-        self.title = @"Home";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
-    } else {
-        self.title = @"Mentions";
-    }
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"left-navigation-26"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
+    [self setNavigationBar];
     
     // Setup table view
     self.tableView.delegate = self;
@@ -89,7 +72,6 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - gesture controls
@@ -106,7 +88,6 @@
 - (void)loadHomelineWithParams:(NSMutableDictionary *)params {
     self.isLoadingOnTheFly = YES;
     
-    // TODO: move this under Tweet class (ORM) instead of calling it here
     NSMutableDictionary *finalParams = params;
     
     if (finalParams == nil) {
@@ -138,7 +119,6 @@
             self.tableView.hidden = NO;
             self.navigationController.navigationBarHidden = NO;
             self.lastLoadTweetsCount = 0;
-            NSLog(@"failed to load home timeline data with error %@", error);
             UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Failed to load data"
                                                                            message:[NSString stringWithFormat:@("%@"), error.localizedDescription]
                                                                     preferredStyle:UIAlertControllerStyleAlert];
@@ -290,7 +270,6 @@
     return mcell;
 }
 
-// TODO: Disable selection when we are hidden (i.e., menu is on)
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     TweetDetailViewController *tdvc = [[TweetDetailViewController alloc] init];
@@ -316,14 +295,14 @@
 - (void) loadCompletionAnimation {
     [UIView animateWithDuration:0.2
                           delay:0
-                        options:UIViewAnimationOptionCurveEaseInOut // UIViewAnimationOptionBeginFromCurrentState
+                        options:UIViewAnimationOptionCurveEaseInOut
                      animations:(void (^)(void)) ^{
                          self.twitterLogIconView.transform = CGAffineTransformMakeScale(0.8, 0.8);
                      }
                      completion:^(BOOL finished){
                          [UIView animateWithDuration:0.8
                                                delay:0
-                                             options:UIViewAnimationOptionCurveEaseInOut // UIViewAnimationOptionBeginFromCurrentState
+                                             options:UIViewAnimationOptionCurveEaseInOut
                                           animations:(void (^)(void)) ^{
                                               self.twitterLogIconView.transform = CGAffineTransformMakeScale(5, 5);
                                           }
@@ -338,9 +317,29 @@
 
 #pragma mark -- helper methods
 
+- (void)setNavigationBar {
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+    self.navigationController.navigationBar.barTintColor = twitterBlue;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar
+     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    // Hide the navigation bar at the beginning
+    self.navigationController.navigationBarHidden = YES;
+    self.backgroundView.backgroundColor = twitterBlue;
+    
+    // Add buttons to navigation bar
+    if (self.tweetsViewSourceIndex == TweetsViewSourceIndexHomeTimeline) {
+        self.title = @"Timelines";
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onCompose)];
+    } else {
+        self.title = @"Mentions";
+    }
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu)];
+}
+
 - (void)onMenu {
     [self.parentContainerViewController toggleMenu];
-    //[User logout];
 }
 
 - (void)presentProfileView:(User *)user {

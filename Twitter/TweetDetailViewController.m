@@ -55,18 +55,11 @@
     // TODO: consider adding a scroll view for the whole detail view or move them to table view
     UIInterfaceOrientation currentOrientation = [UIApplication sharedApplication].statusBarOrientation;
     [self applyTopBarOffsetForOrientation:currentOrientation];
+
     // Need to to do this here instead of inside setTweet because those IBOutlets were nil at that time.
     [self renderTweet];
     
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-    self.navigationController.navigationBar.barTintColor = twitterBlue;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    [self.navigationController.navigationBar
-     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onReply)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onBack)];
+    [self setNavigationBar];
     
     self.mediaCollectionView.delegate = self;
     self.mediaCollectionView.dataSource = self;
@@ -76,6 +69,12 @@
     self.tweetUserProfileImage.clipsToBounds = YES;
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
+
+#pragma mark -- rotation methods
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self applyTopBarOffsetForOrientation:toInterfaceOrientation];
@@ -84,11 +83,6 @@
 - (void)applyTopBarOffsetForOrientation:(UIInterfaceOrientation) orientation {
     BOOL isPhone = [UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone;
     self.navigationBarHeight = UIDeviceOrientationIsLandscape(orientation) && isPhone ? 52 : 64;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark -- collection view methods
@@ -171,7 +165,6 @@
 - (IBAction)onButtonClick:(id)sender {
     if (sender == self.retweetButton) {
         if ([self.tweet.user.userId isEqualToString:[User currentUser].userId]) {
-            NSLog(@"Can't retweet your own tweet");
             return;
         }
         if (!self.tweet.retweeted) {
@@ -211,6 +204,18 @@
 }
 
 #pragma mark - helper function
+
+- (void)setNavigationBar {
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    UIColor *twitterBlue = [UIColor  colorWithRed:85.0f/255.0f green:172.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+    self.navigationController.navigationBar.barTintColor = twitterBlue;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    [self.navigationController.navigationBar
+     setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"pen-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onReply)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"Previous-24"] style:UIBarButtonItemStylePlain target:self action:@selector(onBack)];
+}
 
 - (void)renderTweet {
     Tweet *tweetToShow = self.tweet;

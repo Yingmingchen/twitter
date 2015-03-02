@@ -27,6 +27,7 @@
 @property (nonatomic, strong) UIViewController *childContentViewController;
 
 - (IBAction)onPanContentView:(UIPanGestureRecognizer *)sender;
+- (IBAction)onTapContentView:(UITapGestureRecognizer *)sender;
 
 @property (nonatomic, assign) BOOL isMenuVisible;
 @property (nonatomic, assign) BOOL viewDidAppearCount;
@@ -201,8 +202,8 @@
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.view];
         CGFloat newLeadingConstraint = self.currentContentViewLeadingConstraintValue + translation.x;
-        if (newLeadingConstraint < 0) {
-            newLeadingConstraint = 0;
+        if (newLeadingConstraint < self.view.frame.size.width - 200 && velocity.x < 0) {
+            newLeadingConstraint = self.view.frame.size.width - 200;
         }
         self.contentViewLeadingConstraint.constant = newLeadingConstraint;
         self.contentViewTrailingConstraint.constant = 0 - newLeadingConstraint;
@@ -211,7 +212,6 @@
         [self.contentView layoutIfNeeded];
         
     } else if (sender.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"UIGestureRecognizerStateEnded with velocity %lf", velocity.x);
         if (velocity.x > 0) { // moving right
             self.isMenuVisible = NO;
             [self toggleMenu];
@@ -219,6 +219,16 @@
             self.isMenuVisible = YES;
             [self toggleMenu];
         }
+    }
+}
+
+- (IBAction)onTapContentView:(UITapGestureRecognizer *)sender {
+    if (self.isMenuVisible) {
+        [self toggleMenu];
+    } else {
+        // This is needed for subview's table selection to be called
+        // see http://stackoverflow.com/questions/8952688/didselectrowatindexpath-not-being-called/9248827#9248827
+        sender.cancelsTouchesInView = NO;
     }
 }
 
